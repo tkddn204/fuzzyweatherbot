@@ -58,6 +58,4 @@ target/
 .idea
 
 # private files
-SETTING
-test.py
-bot.db
+setting.ini
