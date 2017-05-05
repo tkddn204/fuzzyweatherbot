@@ -55,7 +55,7 @@ target/
 .venv
 
 # Pycharm idea
-.idea
+.idea/
 
 # private files
 setting.ini
