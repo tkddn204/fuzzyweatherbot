@@ -1,15 +1,17 @@
-from telegram.ext import CommandHandler
+from telegram.ext import CommandHandler, MessageHandler, Filters
 
 from fuzzyweather.handlers.commands import Commands
+from fuzzyweather.handlers.messages import Messages
 from fuzzyweather.util.logger import log
 
 
-class Handlers(Commands):
+class Handlers(Commands, Messages):
     def __init__(self):
         super(Handlers, self).__init__()
         self._handlers = [
             CommandHandler('start', self.command_start),
             CommandHandler('help', self.command_help),
+            MessageHandler(Filters.text, self.message_handle),
         ]
 
     def error_handler(self, bot, update, err):
