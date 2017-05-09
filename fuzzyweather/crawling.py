@@ -25,22 +25,25 @@ def get_weather_inf(url):
         data[2].append(weather.get('title')) # 날씨 추가
     data.remove(data[0])
     data.remove(data[3])
+    data.append(data.pop(3))
 
     # 강수량 교체
     col = []
     content = []
     for row in table.find_all('td', colspan=re.compile('[1-2]')):
-        col.append(row.get('colspan'))
-        content.append(row.contents[0].strip())
+        if len(row.contents) < 2:
+            col.append(row.get('colspan'))
+            content.append(row.contents[0].strip())
+
     rainfall = col, content
     data.insert(3, rainfall)
 
-    #오늘과 내일 col
+    # 오늘과 내일 칼럼 수
     today = table.find('th', attrs={'class': 'today'}).get('colspan')
     tomorrow = table.find('th', attrs={'class': 'tommorow'}).get('colspan')
     data.append((today, tomorrow))
 
-    return data
+    return data[:7], data[7], data[8]
 
 # 사용방법
 # get_weather_inf(KMA_URL % (WIDE_CODE, CITY_CODE, DONG_CODE))
