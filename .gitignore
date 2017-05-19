@@ -58,5 +58,8 @@ target/
 .idea/
 
 # private files
+fuzzyset.xlsx
+fuzzyset.csv
+fuzzy.db
 setting.ini
 test.py
