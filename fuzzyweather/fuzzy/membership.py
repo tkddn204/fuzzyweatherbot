@@ -28,14 +28,14 @@ class Membership(UseDB):
                                 value = 0.0
                         elif rd < middle:
                             value = (rd - left) / (middle - left)
-                        elif rd < right:
-                            value = (rd - right) / (middle - right)
                         elif rd == middle:
                             value = 1.0
+                        elif rd < right:
+                            value = (rd - right) / (middle - right)
                         else:
                             value = 0.0
                         result[i][mem].append([value_name, value])
-        for a in result.keys():
-            for d in result[a].keys():
-                print(result[a][d])
+        # for a in result.keys():
+        #     for d in result[a].keys():
+        #         print(result[a][d])
         return result
