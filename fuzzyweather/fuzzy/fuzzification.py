@@ -1,9 +1,9 @@
 from fuzzyweather.fuzzy.membership import Membership
 from fuzzyweather.fuzzy.crisp import Crawling
 
-AM_LIST = ['24', '03', '06', '09']
+AM_LIST = ['03', '06', '09']
 PM_LIST = ['12', '15']
-NT_LIST = ['18', '21']
+NT_LIST = ['18', '21', '24']
 
 
 class Fuzzification(Membership):
@@ -57,3 +57,5 @@ class Fuzzification(Membership):
 
     def get_fuzzyset(self):
         return self.fuzzyset_with_crisp
+
+# Fuzzification()

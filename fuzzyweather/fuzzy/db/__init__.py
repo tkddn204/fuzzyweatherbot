@@ -1,3 +1,3 @@
-from peewee import SqliteDatabase
+from peewee import *
 
 database = SqliteDatabase('fuzzy.db')

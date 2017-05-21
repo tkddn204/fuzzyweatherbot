@@ -2,6 +2,7 @@ from fuzzyweather.fuzzy import UseDB
 from fuzzyweather.util.timer import get_season
 
 INFINITE = 99999
+TIME_LIST = ['밤', '오후', '오전']
 
 
 class Membership(UseDB):
@@ -13,11 +14,10 @@ class Membership(UseDB):
         result = {}
         for i, d in enumerate(day):
             if 0 not in d:
-                result[i] = {}
+                result[TIME_LIST[i]] = {}
                 for rd, mem in zip(d, self._mem_data.keys()):
-                    result[i][mem] = []
+                    result[TIME_LIST[i]][mem] = {}
                     for m in self._mem_data[mem].keys():
-                        value_name = m
                         left = self._mem_data[mem][m][0]
                         middle = self._mem_data[mem][m][1]
                         right = self._mem_data[mem][m][2]
@@ -34,7 +34,7 @@ class Membership(UseDB):
                             value = (rd - right) / (middle - right)
                         else:
                             value = 0.0
-                        result[i][mem].append([value_name, value])
+                        result[TIME_LIST[i]][mem][m] = value
         # for a in result.keys():
         #     for d in result[a].keys():
         #         print(result[a][d])

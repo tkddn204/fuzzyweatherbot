@@ -1,4 +1,5 @@
-from peewee import *
+from peewee import Model, CharField, FloatField,\
+                   SmallIntegerField, BooleanField
 
 from fuzzyweather.fuzzy.db import database as db
 
@@ -28,10 +29,10 @@ class AfterMembership(BaseModel):
 class Rules(BaseModel):
     rule_num = SmallIntegerField()
     before_variable = CharField()
-    before_not = BooleanField()
+    before_not = SmallIntegerField(default=0)
     before_value = CharField()
-    and_field = BooleanField()
-    or_field = BooleanField()
+    and_field = SmallIntegerField(default=0)
+    or_field = SmallIntegerField(default=0)
     after_variable = CharField(null=True)
-    after_not = BooleanField(null=True)
+    after_not = SmallIntegerField(null=True)
     after_value = CharField(null=True)

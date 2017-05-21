@@ -55,7 +55,7 @@ class Crawling:
         # 최저/최고 온도 pop
         data.pop(4)
 
-        # 강수량 정리(1개 정보를 2개씩 보이도록
+        # 강수량 정리(1개 정보를 2개씩 보이도록)
         rainfall = []
         for i, row in enumerate(data.pop(3)):
             rainfall.append(row)
@@ -67,7 +67,7 @@ class Crawling:
         today = 0
         tomorrow = 0
         if table.find('th', attrs={'class': 'today'}):
-            today = int(table.find('th', attrs={'class': 'today'}).get('colspan'))
+            today = int(table.find('th', attrs={'class': 'today'}).get('colspan'))+1
 
         # 오늘 저녁 9시 이후는 내일 날짜로 출력
         if today <= 1:
