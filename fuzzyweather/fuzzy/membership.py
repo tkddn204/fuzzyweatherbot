@@ -1,44 +1,41 @@
+from fuzzyweather.fuzzy import UseDB
+from fuzzyweather.util.timer import get_season
 
 INFINITE = 99999
 
 
-class Membership:
-    def __init__(self, variable):
-        self.variable = variable
-        self.membership = {}
+class Membership(UseDB):
+    def __init__(self):
+        super(Membership, self).__init__()
+        self._mem_data = self.db.get_membership(get_season(), '기온', '습도')
 
-    def make_linear_fit(self, name, left=0., right=0.):
-        # 대입하는 값들은 X축임
-        self.membership['name'] = name
-        self.membership['name']['left'] = left
-        self.membership['name']['right'] = right
-
-    def all_make_linear_fit(self, *fit):
-        for f in fit:
-            self.make_linear_fit(self, f[0], f[1], f[2])
-
-    def seek_membership(self, name, value=0.):
-        # y축을 계산함
-        left = self.membership['name']['left']
-        right = self.membership['name']['right']
-        middle = (left + right) / 2.
-
-        if value <= left or value >= right:
-            if left is -INFINITE or right is INFINITE:
-                return 1.0
-            return 0.0
-        elif value < middle:
-            if left is -INFINITE:
-                return 1.0
-            else:
-                return (value - left) / (middle - left)
-        elif value < right:
-            if right is INFINITE:
-                return 1.0
-            else:
-                return (value - right) / (middle - right)
-        elif value == middle:
-            return 1.0
-        else:
-            return 0.0
-
+    def _set_membership(self, day):
+        result = {}
+        for i, d in enumerate(day):
+            if 0 not in d:
+                result[i] = {}
+                for rd, mem in zip(d, self._mem_data.keys()):
+                    result[i][mem] = []
+                    for m in self._mem_data[mem].keys():
+                        value_name = m
+                        left = self._mem_data[mem][m][0]
+                        middle = self._mem_data[mem][m][1]
+                        right = self._mem_data[mem][m][2]
+                        if rd <= left or rd >= right:
+                            if left is -INFINITE or right is INFINITE:
+                                value = 1.0
+                            else:
+                                value = 0.0
+                        elif rd < middle:
+                            value = (rd - left) / (middle - left)
+                        elif rd < right:
+                            value = (rd - right) / (middle - right)
+                        elif rd == middle:
+                            value = 1.0
+                        else:
+                            value = 0.0
+                        result[i][mem].append([value_name, value])
+        for a in result.keys():
+            for d in result[a].keys():
+                print(result[a][d])
+        return result
