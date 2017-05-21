@@ -72,7 +72,7 @@ class Rule(UseDB):
         return result
 
 # from fuzzyweather.fuzzy.fuzzification import Fuzzification
-# f = Fuzzification(1)
+# f = Fuzzification()
 # res = Rule().rule_evaluation(f.get_fuzzyset())
 # for r in res:
-#     print(res[r])
+#     print(r, res[r])

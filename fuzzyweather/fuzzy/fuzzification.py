@@ -20,7 +20,7 @@ class Fuzzification(Membership):
         self.__day_list = self.__split_day()
 
         # 멤버쉽 함수에 따라 매핑
-        self.fuzzyset_with_crisp = self._set_membership(self.__day_list)
+        self.fuzzyset_with_crisp = self._set_before_membership(self.__day_list)
 
     @staticmethod
     def __choose_data(day):

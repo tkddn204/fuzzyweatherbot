@@ -1,5 +1,5 @@
 from peewee import Model, CharField, FloatField,\
-                   SmallIntegerField, BooleanField
+                   SmallIntegerField, TextField
 
 from fuzzyweather.fuzzy.db import database as db
 
@@ -36,3 +36,9 @@ class Rules(BaseModel):
     after_variable = CharField(null=True)
     after_not = SmallIntegerField(null=True)
     after_value = CharField(null=True)
+
+
+class ResultText(BaseModel):
+    text = TextField()
+    left = FloatField()
+    right = FloatField()

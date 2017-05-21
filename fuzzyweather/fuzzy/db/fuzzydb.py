@@ -2,7 +2,7 @@ import csv
 from peewee import *
 
 from fuzzyweather.fuzzy.db import database as db
-from fuzzyweather.fuzzy.db.model import BeforeMembership, AfterMembership, Rules
+from fuzzyweather.fuzzy.db.model import BeforeMembership, AfterMembership, Rules, ResultText
 
 PATH = 'db/'+'data_csv/'
 
@@ -10,7 +10,8 @@ PATH = 'db/'+'data_csv/'
 class FuzzyDB:
     def __init__(self):
         db.get_conn()
-        db.create_tables([BeforeMembership, AfterMembership, Rules], safe=True)
+        db.create_tables([BeforeMembership, AfterMembership,
+                          Rules, ResultText], safe=True)
         self.__init_db()
 
     @staticmethod
@@ -50,7 +51,7 @@ class FuzzyDB:
                                  after_not=int(row['후_NOT']),
                                  after_value=row['후언어값'])
 
-    def get_membership(self, season='', *args):
+    def get_before_membership(self, season='', *args):
         data = {}
         for var in args:
             data[var] = {}
@@ -59,6 +60,17 @@ class FuzzyDB:
             for m in ms:
                 data[var][m.value] = [m.left, m.middle, m.right]
         return data
+
+    def get_after_membership(self, *args):
+        data = {}
+        for var in args:
+            data[var] = {}
+            ms = AfterMembership.select().where(
+                AfterMembership.variable == var)
+            for m in ms:
+                data[var][m.value] = [m.left, m.middle, m.right]
+        return data
+
 
     def get_rule_nums(self):
         return Rules.select(fn.MAX(Rules.rule_num)).scalar()
@@ -81,7 +93,9 @@ class FuzzyDB:
     #                 .where(Rules.rule_num == rule_num)
 
 # fuzzydb = FuzzyDB()
-# d = fuzzydb.get_membership('봄', '기온', '습도')
+# d = fuzzydb.get_before_membership('봄', '기온', '습도')
+# print(d)
+# d = fuzzydb.get_after_membership('결과')
 # print(d)
 # for r in fuzzydb.get_rules():
 #     print(r.before_variable)
