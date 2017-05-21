@@ -22,9 +22,9 @@ class Rule(UseDB):
             if r.and_field or r.or_field:
                 for i in range(len(data[d]) - 1):
                     if r.and_field:
-                        data[d][i] = data[d][i] if data[d][i] > data[d][i + 1] else data[d][i + 1]
+                        data[d][i] = data[d][i] if data[d][i] <= data[d][i + 1] else data[d][i + 1]
                     else:
-                        data[d][i] = data[d][i] if data[d][i] < data[d][i + 1] else data[d][i + 1]
+                        data[d][i] = data[d][i] if data[d][i] >= data[d][i + 1] else data[d][i + 1]
                     del (data[d][i + 1])
             else:
                 break
@@ -72,8 +72,7 @@ class Rule(UseDB):
         return result
 
 # from fuzzyweather.fuzzy.fuzzification import Fuzzification
-# f = Fuzzification()
+# f = Fuzzification(1)
 # res = Rule().rule_evaluation(f.get_fuzzyset())
 # for r in res:
 #     print(res[r])
-
