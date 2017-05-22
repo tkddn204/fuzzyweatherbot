@@ -85,7 +85,7 @@ class Crawling:
 
         # 최종 데이터 내보내기
         weather_table = self.__clean_up_data(data, today, tomorrow)
-        return weather_table
+        return weather_table, day
 
 # 사용방법
 # 오늘 날씨는 no parameter, 내일 날씨는 1

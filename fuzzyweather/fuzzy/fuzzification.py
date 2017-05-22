@@ -7,26 +7,26 @@ NT_LIST = ['18', '21', '24']
 
 
 class Fuzzification(Membership):
-    def __init__(self, day=0):
+    def __init__(self, when=0):
         super(Fuzzification, self).__init__()
         self.__morning = []
         self.__afternoon = []
         self.__night = []
 
         # crisp 데이터에서 기온과 습도만 가져옴
-        self.__crisp_data = self.__choose_data(day)
+        self.__crisp_data, self.__day = self.__choose_data(when)
 
         # 밤, 오후, 오전으로 나눔(각 평균 출력 - 날짜, 강수량 제외)
         self.__day_list = self.__split_day()
 
         # 멤버쉽 함수에 따라 매핑
-        self.fuzzyset_with_crisp = self._set_before_membership(self.__day_list)
+        self.__fuzzyset_with_crisp = self._set_before_membership(self.__day_list)
 
     @staticmethod
     def __choose_data(day):
-        # crisp 데이터를 받아옴
-        crisp_data = Crawling().get_weather_inf(day)
-        return crisp_data
+        # crisp 데이터와 데이터의 날짜를 받아옴
+        crisp_data, d = Crawling().get_weather_inf(day)
+        return crisp_data, d
 
     def __split_time(self):
         bool_list = []
@@ -55,7 +55,7 @@ class Fuzzification(Membership):
                 avg_list[i][m] = float(sum(int(day_list[i][k][row]) for k in range(n))/n)
         return avg_list
 
-    def get_fuzzyset(self):
-        return self.fuzzyset_with_crisp
+    def get_fuzzyset_and_day(self):
+        return self.__fuzzyset_with_crisp, self.__day
 
 # Fuzzification()
