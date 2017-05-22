@@ -5,7 +5,6 @@ from fuzzyweather.fuzzy.db import PATH, database as db
 from fuzzyweather.fuzzy.db.model import BeforeMembership, AfterMembership, Rules
 
 
-
 class FuzzyDB:
     def __init__(self):
         db.get_conn()
@@ -64,6 +63,8 @@ class FuzzyDB:
         return data
 
     def get_after_membership(self, *args):
+        if not args:
+            args = self.get_after_variables()
         data = {}
         for var in args:
             data[var] = {}
@@ -72,6 +73,9 @@ class FuzzyDB:
             for m in ms:
                 data[var][m.value] = [m.left, m.middle, m.right]
         return data
+
+    def get_after_variables(self):
+        return AfterMembership.select(AfterMembership.variable).distinct().scalar(as_tuple=True)
 
     def get_after_text(self, variable='결과'):
         return AfterMembership.select(AfterMembership.value, AfterMembership.text)\

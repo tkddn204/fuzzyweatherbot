@@ -1,20 +1,18 @@
 from fuzzyweather.fuzzy import UseDB
 from fuzzyweather.util.timer import get_season
 
-INFINITE = 99999
-TIME_LIST = ['밤', '오후', '오전']
-
 
 class Membership(UseDB):
     def __init__(self):
         super(Membership, self).__init__()
         self._before_mem_data = self.db.get_before_membership(get_season(), '기온', '습도')
-        self._after_mem_data = self.db.get_after_membership('결과')
+        self._after_mem_data = self.db.get_after_membership()
 
     @staticmethod
     def __find_linear_membership(data, left, middle, right):
+        infinite = 99999
         if data <= left or data >= right:
-            if left is -INFINITE or right is INFINITE:
+            if left is -infinite or right is infinite:
                 value = 1.0
             else:
                 value = 0.0
@@ -29,18 +27,19 @@ class Membership(UseDB):
         return value
 
     def _set_before_membership(self, day):
+        time_list = ['밤', '오후', '오전']
         result = {}
         for i, d in enumerate(day):
             if 0 not in d:
-                result[TIME_LIST[i]] = {}
+                result[time_list[i]] = {}
                 for rd, mem in zip(d, self._before_mem_data.keys()):
-                    result[TIME_LIST[i]][mem] = {}
+                    result[time_list[i]][mem] = {}
                     for m in self._before_mem_data[mem].keys():
                         left = self._before_mem_data[mem][m][0]
                         middle = self._before_mem_data[mem][m][1]
                         right = self._before_mem_data[mem][m][2]
                         value = self.__find_linear_membership(rd, left, middle, right)
-                        result[TIME_LIST[i]][mem][m] = value
+                        result[time_list[i]][mem][m] = value
         # for a in result.keys():
         #     for d in result[a].keys():
         #         print(result[a][d])

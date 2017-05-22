@@ -8,7 +8,7 @@ class Defuzzification(UseDB):
 
     # 무게중심법 계산
     def __center_of_gravity(self, result):
-        mem = self.db.get_after_membership('결과')
+        mem = self.db.get_after_membership()
         sum_top = 0.
         sum_bottom = 0.
         cog_list = {}

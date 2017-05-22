@@ -7,7 +7,7 @@ class Inference(Fuzzification):
     def __init__(self):
         super(Inference, self).__init__()
 
-    def start(self, day=0):
+    def run(self, day=0):
         f = Fuzzification(day)
         res = Rule().rule_evaluation(f.get_fuzzyset())
         cog = Defuzzification().result_text(res)

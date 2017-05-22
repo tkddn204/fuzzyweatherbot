@@ -1,5 +1,5 @@
-
-from fuzzyweather.text import *
+from fuzzyweather.text import TEXT_START, TEXT_HELP, KEYBOARD_SELECT
+from telegram import ReplyKeyboardMarkup
 
 
 class Commands:
@@ -12,7 +12,8 @@ class Commands:
         bot.sendMessage(
             update.message.chat_id,
             text=TEXT_START.format(
-                user_name=user_name, bot_name=bot.name))
+                user_name=user_name, bot_name=bot.name),
+            reply_markup=ReplyKeyboardMarkup(KEYBOARD_SELECT))
         bot.sendMessage(
             update.message.chat_id,
             text=TEXT_HELP)

@@ -15,7 +15,7 @@ def add_handlers(dp):
 
 
 def main():
-    log.info("Bot is setting...")
+    log.info("fuzzyweatherbot is setting...")
     if TOKEN == '':
         log.error('!! 토큰이 없어요 !!')
         return
@@ -24,8 +24,9 @@ def main():
     dp = updater.dispatcher
     add_handlers(dp)
 
+    # DB 초기화
     FuzzyDB().__init__()
 
     updater.start_polling()
-    log.info("Bot starts polling!")
+    log.info("fuzzyweatherbot starts polling!")
     updater.idle()
