@@ -90,8 +90,8 @@ class Crawling:
 
 # 사용방법
 # 오늘 날씨는 no parameter, 내일 날씨는 1
-dat = Crawling().get_weather_inf()
-dus = Crawling().get_dust_inf()
-for d in dat:
-    print(d)
-print(dus)
+# dat = Crawling().get_weather_inf()
+# dus = Crawling().get_dust_inf()
+# for d in dat:
+#     print(d)
+# print(dus)
