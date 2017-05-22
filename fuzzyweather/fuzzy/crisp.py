@@ -39,8 +39,7 @@ class Crawling:
                     dust = row.find_all('td')[1].text
             return dust
         except AttributeError as e:
-            return '수정 중...'
-
+            return '오류! @SsangWoo 에게 문의해주세요!'
 
     # day = 0 -> 오늘, day = 1 -> 내일
     def get_weather_inf(self, day=0):
