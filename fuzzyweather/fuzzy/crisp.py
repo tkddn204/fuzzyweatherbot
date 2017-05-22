@@ -31,12 +31,15 @@ class Crawling:
         dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
 
         # 미세먼지 가져오기
-        rows = dust_table.find('tbody').find_all('tr')
-        dust = ''
-        for row in rows:
-            if row.find('th').text in '대전':
-                dust = row.find_all('td')[1].text
-        return dust
+        try:
+            rows = dust_table.find('tbody').find_all('tr')
+            dust = ''
+            for row in rows:
+                if row.find('th').text in '대전':
+                    dust = row.find_all('td')[1].text
+            return dust
+        except AttributeError as e:
+            return '오류! @SsangWoo 에게 문의해주세요.'
 
 
     # day = 0 -> 오늘, day = 1 -> 내일
@@ -87,7 +90,8 @@ class Crawling:
 
 # 사용방법
 # 오늘 날씨는 no parameter, 내일 날씨는 1
-# dat, dus = Crawling().get_weather_inf()
+# dat = Crawling().get_weather_inf()
+# dus = Crawling().get_dust_inf()
 # for d in dat:
 #     print(d)
 # print(dus)
