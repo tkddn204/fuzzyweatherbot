@@ -14,7 +14,7 @@ class Fuzzification(Membership):
         self.__night = []
 
         # crisp 데이터에서 기온과 습도만 가져옴
-        self.__crisp_data, self.__crisp_dust = self.__choose_data(day)
+        self.__crisp_data = self.__choose_data(day)
 
         # 밤, 오후, 오전으로 나눔(각 평균 출력 - 날짜, 강수량 제외)
         self.__day_list = self.__split_day()
@@ -25,8 +25,8 @@ class Fuzzification(Membership):
     @staticmethod
     def __choose_data(day):
         # crisp 데이터를 받아옴
-        crisp_data, crisp_dust = Crawling().get_weather_inf(day)
-        return crisp_data, crisp_dust
+        crisp_data = Crawling().get_weather_inf(day)
+        return crisp_data
 
     def __split_time(self):
         bool_list = []

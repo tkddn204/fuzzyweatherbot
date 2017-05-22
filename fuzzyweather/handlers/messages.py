@@ -1,32 +1,38 @@
+from fuzzyweather.fuzzy.engine import Inference
+from fuzzyweather.fuzzy.crisp import Crawling
 
 
 class Messages:
     def __init__(self):
         pass
 
+    @staticmethod
+    def __fuzzy_message(res_list):
+        fuzzy_text = '퍼지 분석 결과: \n'
+        for d in reversed(list(res_list.keys())):
+            fuzzy_text += '{0}에는 {1:.1f}% 확률로 {2}\n'.format(
+                d, res_list[d][2], res_list[d][1])
+        return fuzzy_text
+
     def message_handle(self, bot, update):
         text = update.message.text
 
-        if text in '오늘의 날씨':
+        if text in ['오늘의 날씨', '내일의 날씨']:
             bot.sendMessage(update.message.chat_id,
-                            text='한밭대 오늘의 날씨 \n'
-                                 '구름 조금 \n'
-                                 '평균 온도 : 20℃ \n'
-                                 '평균 습도 : 30%')
+                            text='잠시만 기다려주세요...')
+            if text in '오늘의 날씨':
+                res_list = Inference().start()
+                dust = Crawling().get_dust_inf()
+                bot.sendMessage(update.message.chat_id,
+                                text='한밭대 오늘의 날씨 \n'
+                                     '미세먼지 : ' + dust)
+                fuzzy_text = self.__fuzzy_message(res_list)
+            else:
+                res_list = Inference().start(1)
+                bot.sendMessage(update.message.chat_id,
+                                text='한밭대 내일의 날씨 \n')
+                fuzzy_text = self.__fuzzy_message(res_list)
             bot.sendMessage(update.message.chat_id,
-                            text='봇의 한마디: \n'
-                                 '오늘은 날씨가 좋네요! \n'
-                                 '밖에 나가서 나들이라도 하는 게 어떨까요?')
-        elif text in '내일의 날씨':
-            bot.sendMessage(update.message.chat_id,
-                            text='한밭대 내일의 날씨 \n'
-                                 '강한 비 \n'
-                                 '평균 온도 : 10℃ \n'
-                                 '평균 습도 : 80% \n'
-                                 '강수 확률 : 80%')
-            bot.sendMessage(update.message.chat_id,
-                            text='봇의 한마디: \n'
-                                 '밖이 쌀쌀해요! 옷을 챙겨 입으세요!\n'
-                                 '밖에 나갈 땐 우산을 가져가세요!')
+                            text=fuzzy_text)
         else:
             pass

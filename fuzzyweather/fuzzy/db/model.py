@@ -24,6 +24,7 @@ class AfterMembership(BaseModel):
     left = FloatField()
     middle = FloatField()
     right = FloatField()
+    text = TextField()
 
 
 class Rules(BaseModel):
@@ -36,9 +37,3 @@ class Rules(BaseModel):
     after_variable = CharField(null=True)
     after_not = SmallIntegerField(null=True)
     after_value = CharField(null=True)
-
-
-class ResultText(BaseModel):
-    text = TextField()
-    left = FloatField()
-    right = FloatField()

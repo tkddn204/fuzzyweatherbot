@@ -2,16 +2,16 @@ import csv
 from peewee import *
 
 from fuzzyweather.fuzzy.db import database as db
-from fuzzyweather.fuzzy.db.model import BeforeMembership, AfterMembership, Rules, ResultText
+from fuzzyweather.fuzzy.db.model import BeforeMembership, AfterMembership, Rules
 
-PATH = 'db/'+'data_csv/'
+PATH = 'fuzzyweather/'+'fuzzy/'+'db/'+'data_csv/'
 
 
 class FuzzyDB:
     def __init__(self):
         db.get_conn()
         db.create_tables([BeforeMembership, AfterMembership,
-                          Rules, ResultText], safe=True)
+                          Rules], safe=True)
         self.__init_db()
 
     @staticmethod
@@ -35,7 +35,8 @@ class FuzzyDB:
                                            value=row['언어값'],
                                            left=float(row['최저']),
                                            middle=float(row['중간']),
-                                           right=float(row['최고']))
+                                           right=float(row['최고']),
+                                           text=row['텍스트'])
 
         if Rules.select().count() is 0:
             with open(PATH + 'rule.csv', 'r', encoding='utf-8') as fr:
@@ -71,6 +72,9 @@ class FuzzyDB:
                 data[var][m.value] = [m.left, m.middle, m.right]
         return data
 
+    def get_after_text(self, variable='결과'):
+        return AfterMembership.select(AfterMembership.value, AfterMembership.text)\
+            .where(AfterMembership.variable == variable)
 
     def get_rule_nums(self):
         return Rules.select(fn.MAX(Rules.rule_num)).scalar()

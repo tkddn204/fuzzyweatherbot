@@ -25,14 +25,25 @@ class Crawling:
         else:
             return [i[:today] for i in data]
 
+    def get_dust_inf(self):
+        # 미세먼지
+        dust_soup = BeautifulSoup(requests.get(self.__DUST_URL).text, 'html.parser')
+        dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
+
+        # 미세먼지 가져오기
+        rows = dust_table.find('tbody').find_all('tr')
+        dust = ''
+        for row in rows:
+            if row.find('th').text in '대전':
+                dust = row.find_all('td')[1].text
+        return dust
+
+
     # day = 0 -> 오늘, day = 1 -> 내일
     def get_weather_inf(self, day=0):
         # 기상청
         soup = BeautifulSoup(requests.get(self._URL).text, 'html.parser')
         table = soup.find('table', attrs={'class': 'forecastNew3'})
-        # 미세먼지
-        dust_soup = BeautifulSoup(requests.get(self.__DUST_URL).text, 'html.parser')
-        dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
         data = []
 
         # 테이블 안의 내용 가져오기
@@ -41,12 +52,6 @@ class Crawling:
             cols = row.find_all('td')
             cols = [ele.text.strip() for ele in cols]
             data.append([ele for ele in cols if ele])
-        # 미세먼지 가져오기
-        rows = dust_table.find('tbody').find_all('tr')
-        dust = ''
-        for row in rows:
-            if row.find('th').text in '대전':
-                dust = row.find_all('td')[1].text
 
         # 테이블에 날씨 정보 추가 및 빈 리스트 정리
         for weather in table.find_all('td', attrs={'class': 'PD_none'}):
@@ -78,7 +83,7 @@ class Crawling:
 
         # 최종 데이터 내보내기
         weather_table = self.__clean_up_data(data, today, tomorrow)
-        return weather_table, dust
+        return weather_table
 
 # 사용방법
 # 오늘 날씨는 no parameter, 내일 날씨는 1
