@@ -1,10 +1,9 @@
 import csv
 from peewee import *
 
-from fuzzyweather.fuzzy.db import database as db
+from fuzzyweather.fuzzy.db import PATH, database as db
 from fuzzyweather.fuzzy.db.model import BeforeMembership, AfterMembership, Rules
 
-PATH = 'fuzzyweather/'+'fuzzy/'+'db/'+'data_csv/'
 
 
 class FuzzyDB:
@@ -17,29 +16,31 @@ class FuzzyDB:
     @staticmethod
     def __init_db():
         if BeforeMembership.select().count() is 0:
-            with open(PATH + 'before_fuzzyset.csv', 'r', encoding='utf-8') as fb:
+            with open(PATH + 'data_csv/before_fuzzyset.csv', 'r', encoding='utf-8') as fb:
                 dr = csv.DictReader(fb)
                 for row in dr:
-                    BeforeMembership.create(season=row['\ufeff계절'],
-                                            variable=row['언어변수'],
-                                            value=row['언어값'],
-                                            left=float(row['최저']),
-                                            middle=float(row['중간']),
-                                            right=float(row['최고']))
+                    if '' not in row:
+                        BeforeMembership.create(season=row['\ufeff계절'],
+                                                variable=row['언어변수'],
+                                                value=row['언어값'],
+                                                left=float(row['최저']),
+                                                middle=float(row['중간']),
+                                                right=float(row['최고']))
 
         if AfterMembership.select().count() is 0:
-            with open(PATH + 'after_fuzzyset.csv', 'r', encoding='utf-8') as fa:
+            with open(PATH + 'data_csv/after_fuzzyset.csv', 'r', encoding='utf-8') as fa:
                 dr = csv.DictReader(fa)
                 for row in dr:
-                    AfterMembership.create(variable=row['\ufeff언어변수'],
-                                           value=row['언어값'],
-                                           left=float(row['최저']),
-                                           middle=float(row['중간']),
-                                           right=float(row['최고']),
-                                           text=row['텍스트'])
+                    if '' not in row:
+                        AfterMembership.create(variable=row['\ufeff언어변수'],
+                                               value=row['언어값'],
+                                               left=float(row['최저']),
+                                               middle=float(row['중간']),
+                                               right=float(row['최고']),
+                                               text=row['텍스트'])
 
         if Rules.select().count() is 0:
-            with open(PATH + 'rule.csv', 'r', encoding='utf-8') as fr:
+            with open(PATH + 'data_csv/rule.csv', 'r', encoding='utf-8') as fr:
                 dr = csv.DictReader(fr)
                 for row in dr:
                     Rules.create(rule_num=row['\ufeff규칙번호'],

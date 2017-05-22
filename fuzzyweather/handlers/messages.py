@@ -10,7 +10,7 @@ class Messages:
     def __fuzzy_message(res_list):
         fuzzy_text = '퍼지 분석 결과: \n'
         for d in reversed(list(res_list.keys())):
-            fuzzy_text += '[{1:.1f}%] {0}에는 {2}\n'.format(
+            fuzzy_text += '[{0:.1f}] {1}에는 {2}\n'.format(
                 res_list[d][2], d, res_list[d][1])
         return fuzzy_text
 

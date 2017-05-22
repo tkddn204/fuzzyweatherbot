@@ -1,3 +1,5 @@
 from peewee import *
 
-database = SqliteDatabase('fuzzy.db')
+PATH = 'fuzzyweather/'+'fuzzy/'+'db/'
+
+database = SqliteDatabase(PATH + 'fuzzy.db')

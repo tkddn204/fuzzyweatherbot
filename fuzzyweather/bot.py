@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 from telegram.ext import Updater
 
+from fuzzyweather.fuzzy.db.fuzzydb import FuzzyDB
 from fuzzyweather.util.config import TOKEN
 from fuzzyweather.util.logger import log
 from fuzzyweather.handlers.handlers import Handlers
@@ -22,6 +23,8 @@ def main():
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
     add_handlers(dp)
+
+    FuzzyDB().__init__()
 
     updater.start_polling()
     log.info("Bot starts polling!")

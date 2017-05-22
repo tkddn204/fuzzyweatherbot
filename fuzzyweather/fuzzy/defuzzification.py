@@ -21,8 +21,8 @@ class Defuzzification(UseDB):
                         sum_result = 0.
                     else:
                         sum_result = sum_top/sum_bottom
-                        name = Membership().seek_after_membership(sum_result)
-                cog_list[t] = {me: [name[0], sum_result]}
+                    after_mem = Membership().seek_after_membership(sum_result)
+                    cog_list[t] = {me: [after_mem[0], sum_result]}
         return cog_list
 
     # 결과를 텍스트로 내보내기
