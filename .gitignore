@@ -59,7 +59,6 @@ target/
 
 # private files
 *.xlsx
-*.csv
 fuzzy.db
 setting.ini
 test.py
