@@ -4,36 +4,36 @@ from fuzzyweather.fuzzy import UseDB
 class Rule(UseDB):
     def __init__(self):
         super(Rule, self).__init__()
-
         self.__rule_nums = self.db.get_rule_nums()
-        self.__rule = self.db.get_rules(1)
+        self.__rule = []
 
     # 전건 평가
-    def __before_evaluation(self, d, data, fuzzy_input):
+    def __before_evaluation(self, time, data, fuzzy_input):
         for r in self.__rule:
-            if r.before_not:
-                data[d].append(1. - fuzzy_input[d][r.before_variable][r.before_value])
+            if r.before_not is 1:
+                insert = 1. - fuzzy_input[time][r.before_variable][r.before_value]
             else:
-                data[d].append(fuzzy_input[d][r.before_variable][r.before_value])
+                insert = fuzzy_input[time][r.before_variable][r.before_value]
+            data[time].append(insert)
 
     # 전건들의 and, or 평가
-    def __and_or_evaluation(self, d, data):
+    def __and_or_evaluation(self, time, data):
         for r in self.__rule:
             if r.and_field or r.or_field:
-                for i in range(len(data[d]) - 1):
-                    if r.and_field:
-                        data[d][i] = data[d][i] if data[d][i] <= data[d][i + 1] else data[d][i + 1]
-                    else:
-                        data[d][i] = data[d][i] if data[d][i] >= data[d][i + 1] else data[d][i + 1]
-                    del (data[d][i + 1])
+                if r.and_field:
+                    data[time][1] = data[time][0] if data[time][0] <= data[time][1] else data[time][1]
+                else:
+                    data[time][1] = data[time][0] if data[time][0] >= data[time][1] else data[time][1]
+                del(data[time][0])
             else:
                 break
+        data[time] = data[time][0]
 
     # 후건 평가
-    def __after_evaluation(self, d, data):
+    def __after_evaluation(self, time, data):
         for r in self.__rule:
             if r.after_variable in ['결과']:
-                data[d] = [r.after_value, data[d][0]]
+                data[time] = [r.after_value, data[time]]
 
     # 규칙 평가
     def rule_evaluation(self, fuzzy_input):
@@ -41,17 +41,17 @@ class Rule(UseDB):
         for num in range(1, self.__rule_nums+1):
             data = {}
             self.__rule = self.db.get_rules(num)
-            for d in fuzzy_input.keys():
-                data[d] = []
+            for time in fuzzy_input.keys():
+                data[time] = []
                 # 전건
-                self.__before_evaluation(d, data, fuzzy_input)
+                self.__before_evaluation(time, data, fuzzy_input)
                 # AND, OR 처리
-                self.__and_or_evaluation(d, data)
+                self.__and_or_evaluation(time, data)
                 # 후건
-                self.__after_evaluation(d, data)
+                self.__after_evaluation(time, data)
             rule_eval_list[num] = data
         # for r in rule_eval_list:
-        #     print(r, rule_eval_list[r].keys())
+        #     print(r, rule_eval_list[r].items())
         # 규칙 후건의 통합
         result = self.__rule_after_integration(rule_eval_list)
         return result
@@ -60,19 +60,25 @@ class Rule(UseDB):
     @staticmethod
     def __rule_after_integration(eval_list):
         result = {}
-        for r in eval_list:
-            for d in eval_list[r]:
-                eval_element = eval_list[r][d]
-                if d not in result:
-                    result[d] = {}
-                if eval_element[0] not in result[d]:
-                    result[d][eval_element[0]] = 0.
-                if result[d][eval_element[0]] < eval_element[1]:
-                    result[d][eval_element[0]] = eval_element[1]
+        for num in eval_list:
+            for time in eval_list[num]:
+                eval_element = eval_list[num][time]  # ['언어변수', 값]
+                if time not in result:
+                    result[time] = {}
+                if eval_element[0] not in result[time]:
+                    result[time][eval_element[0]] = 0.
+                if result[time][eval_element[0]] < eval_element[1]:
+                    result[time][eval_element[0]] = eval_element[1]
+
         return result
 
 # from fuzzyweather.fuzzy.fuzzification import Fuzzification
 # f = Fuzzification()
-# res = Rule().rule_evaluation(f.get_fuzzyset())
+# fs, d = f.get_fuzzyset_and_day(0)
+# for f in fs:
+#     print(f)
+#     for s in fs[f]:
+#         print(s, fs[f][s])
+# res = Rule().rule_evaluation(fs)
 # for r in res:
 #     print(r, res[r])

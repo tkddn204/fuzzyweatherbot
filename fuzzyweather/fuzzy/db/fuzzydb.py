@@ -3,6 +3,7 @@ from peewee import *
 
 from fuzzyweather.fuzzy.db import PATH, database as db
 from fuzzyweather.fuzzy.db.model import BeforeMembership, AfterMembership, Rules
+from fuzzyweather.util.timer import get_season
 
 
 class FuzzyDB:
@@ -36,7 +37,8 @@ class FuzzyDB:
                                                left=float(row['최저']),
                                                middle=float(row['중간']),
                                                right=float(row['최고']),
-                                               text=row['텍스트'])
+                                               text=row['텍스트'],
+                                               emoticon=row['이모티콘'])
 
         if Rules.select().count() is 0:
             with open(PATH + 'data_csv/rule.csv', 'r', encoding='utf-8') as fr:
@@ -52,39 +54,49 @@ class FuzzyDB:
                                  after_not=int(row['후_NOT']),
                                  after_value=row['후언어값'])
 
-    def get_before_membership(self, season='', *args):
+    def get_before_membership(self):
+        season = get_season()
         data = {}
-        for var in args:
-            data[var] = {}
+        variables = self.get_before_variables()
+        for var in variables:
+            data[var.variable] = {}
             ms = BeforeMembership.select().where(
-                BeforeMembership.season == season, BeforeMembership.variable == var)
+                BeforeMembership.season == season,
+                BeforeMembership.variable == var.variable)
             for m in ms:
-                data[var][m.value] = [m.left, m.middle, m.right]
+                data[var.variable][m.value] = [m.left, m.middle, m.right]
         return data
 
-    def get_after_membership(self, *args):
-        if not args:
-            args = self.get_after_variables()
+    def get_after_membership(self):
         data = {}
-        for var in args:
-            data[var] = {}
+        variables = self.get_after_variables()
+        for var in variables:
+            data[var.variable] = {}
             ms = AfterMembership.select().where(
-                AfterMembership.variable == var)
+                AfterMembership.variable == var.variable)
             for m in ms:
-                data[var][m.value] = [m.left, m.middle, m.right]
+                data[var.variable][m.value] = [m.left, m.middle, m.right]
         return data
 
-    def get_after_variables(self):
-        return AfterMembership.select(AfterMembership.variable).distinct().scalar(as_tuple=True)
+    @staticmethod
+    def get_before_variables():
+        return BeforeMembership.select(BeforeMembership.variable).distinct()
 
-    def get_after_text(self, variable='결과'):
-        return AfterMembership.select(AfterMembership.value, AfterMembership.text)\
+    @staticmethod
+    def get_after_variables():
+        return AfterMembership.select(AfterMembership.variable).distinct()
+
+    @staticmethod
+    def get_after_text_and_emoticon(variable='결과'):
+        return AfterMembership.select(AfterMembership.value, AfterMembership.text, AfterMembership.emoticon)\
             .where(AfterMembership.variable == variable)
 
-    def get_rule_nums(self):
+    @staticmethod
+    def get_rule_nums():
         return Rules.select(fn.MAX(Rules.rule_num)).scalar()
 
-    def get_rules(self, rule_num=1):
+    @staticmethod
+    def get_rules(rule_num=1):
         return Rules.select().where(Rules.rule_num == rule_num)
 
     # def get_before_rule(self, rule_num=1):
@@ -102,7 +114,7 @@ class FuzzyDB:
     #                 .where(Rules.rule_num == rule_num)
 
 # fuzzydb = FuzzyDB()
-# d = fuzzydb.get_before_membership('봄', '기온', '습도')
+# d = fuzzydb.get_before_membership()
 # print(d)
 # d = fuzzydb.get_after_membership('결과')
 # print(d)

@@ -1,11 +1,10 @@
 from fuzzyweather.fuzzy import UseDB
-from fuzzyweather.util.timer import get_season
 
 
 class Membership(UseDB):
     def __init__(self):
         super(Membership, self).__init__()
-        self._before_mem_data = self.db.get_before_membership(get_season(), '기온', '습도')
+        self._before_mem_data = self.db.get_before_membership()
         self._after_mem_data = self.db.get_after_membership()
 
     @staticmethod
@@ -26,23 +25,26 @@ class Membership(UseDB):
             value = 0.0
         return value
 
-    def _set_before_membership(self, day):
-        time_list = ['밤', '오후', '오전']
+    def _set_before_membership(self, day_list):
+        text = ['밤', '오후', '오전']
         result = {}
-        for i, d in enumerate(day):
-            if 0 not in d:
-                result[time_list[i]] = {}
-                for rd, mem in zip(d, self._before_mem_data.keys()):
-                    result[time_list[i]][mem] = {}
+        # 밤, 오후, 오전 나눔
+        for i, day in enumerate(day_list):
+            if 0 not in day:
+                result[text[i]] = {}
+                # 기온, 3개 묶음 1개씩 처리
+                for day_data, mem in zip(day, self._before_mem_data.keys()):
+                    result[text[i]][mem] = {}
                     for m in self._before_mem_data[mem].keys():
                         left = self._before_mem_data[mem][m][0]
                         middle = self._before_mem_data[mem][m][1]
                         right = self._before_mem_data[mem][m][2]
-                        value = self.__find_linear_membership(rd, left, middle, right)
-                        result[time_list[i]][mem][m] = value
+                        value = self.__find_linear_membership(day_data, left, middle, right)
+                        result[text[i]][mem][m] = value
         # for a in result.keys():
         #     for d in result[a].keys():
-        #         print(result[a][d])
+        #         for k in result[a][k].keys():
+        #             print(result[a][d][k])
         return result
 
     def seek_after_membership(self, value):

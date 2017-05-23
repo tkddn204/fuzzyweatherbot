@@ -10,7 +10,10 @@ class Inference(Fuzzification):
 
     def run(self, when=0):
         f = Fuzzification(when)
-        fuzzyset, self.day = f.get_fuzzyset_and_day()
-        res = Rule().rule_evaluation(fuzzyset)
+        fuzzy_set, self.day = f.get_fuzzyset_and_day()
+        res = Rule().rule_evaluation(fuzzy_set)
         cog = Defuzzification().result_text(res)
         return cog
+
+# a = Inference().run(0)
+# print(a)

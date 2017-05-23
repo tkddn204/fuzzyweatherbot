@@ -25,6 +25,7 @@ class AfterMembership(BaseModel):
     middle = FloatField()
     right = FloatField()
     text = TextField()
+    emoticon = CharField()
 
 
 class Rules(BaseModel):

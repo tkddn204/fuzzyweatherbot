@@ -16,8 +16,8 @@ class Fuzzification(Membership):
         # crisp 데이터에서 기온과 습도만 가져옴
         self.__crisp_data, self.__day = self.__choose_data(when)
 
-        # 밤, 오후, 오전으로 나눔(각 평균 출력 - 날짜, 강수량 제외)
-        self.__day_list = self.__split_day()
+        # 밤, 오후, 오전으로 나눔(각 평균 출력, 강수량 출력 - 날짜 제외)
+        self.__day_list, self._rain_fall = self.__split_day()
 
         # 멤버쉽 함수에 따라 매핑
         self.__fuzzyset_with_crisp = self._set_before_membership(self.__day_list)
@@ -39,23 +39,26 @@ class Fuzzification(Membership):
         cut_time = self.__split_time()
         day_list = [[], [], []]
         # avg_list = [[0, [], 0, 0, 0, 0] for i in range(3)]
-        avg_list = [[0, 0] for i in range(3)]
+        avg_list = [[0., 0., 0.] for i in range(3)]
+        rain_fall = []
         for i, n in enumerate(reversed(cut_time)):
             # 밤, 오후, 오전을 나눔
             if n == 0:
                 continue
             for k in range(n):
                 day_list[i].append([col.pop() for col in self.__crisp_data])
-            # 각 평균을 구함(날짜, 강수량 제외)
-            # for row in [1, 3]:
-            #     avg_list[i][row-1] = [day_list[i][k][row] for k in range(n)]
-            # for row in [2, 4, 5, 6]:
-            #     avg_list[i][row-1] = float(sum(int(day_list[i][k][row]) for k in range(n))/n)
-            for m, row in enumerate([4, 6]):
+            # 각 평균을 구함(날짜, 풍속 제외)
+            # 강수량은 리스트 그대로(따로 뺌)
+            for m, row in enumerate([3]):
+                rain_fall = [day_list[i][k][row] for k in range(n)]
+            # 기온, 습도, 강수확률(구름량)
+            for m, row in enumerate([4, 6, 2]):
                 avg_list[i][m] = float(sum(int(day_list[i][k][row]) for k in range(n))/n)
-        return avg_list
+        return avg_list, rain_fall
 
     def get_fuzzyset_and_day(self):
         return self.__fuzzyset_with_crisp, self.__day
 
-# Fuzzification()
+# f = Fuzzification()
+# fs, d = f.get_fuzzyset_and_day()
+# print(fs, d)
