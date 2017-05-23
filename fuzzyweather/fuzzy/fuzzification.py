@@ -17,7 +17,7 @@ class Fuzzification(Membership):
         self.__crisp_data, self.__day = self.__choose_data(when)
 
         # 밤, 오후, 오전으로 나눔(각 평균 출력, 강수량 출력 - 날짜 제외)
-        self.__day_list, self._rain_fall = self.__split_day()
+        self.__day_list, self.rain_fall = self.__split_day()
 
         # 멤버쉽 함수에 따라 매핑
         self.__fuzzyset_with_crisp = self._set_before_membership(self.__day_list)

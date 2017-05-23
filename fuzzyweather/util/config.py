@@ -3,14 +3,12 @@
 import configparser
 from fuzzyweather.util.logger import log
 
-config = configparser.ConfigParser()
+config = configparser.RawConfigParser()
 config.read('setting.ini')
 
 if not config.has_section('credentials'):
     config.add_section('credentials')
-    config.set('credentials', 'TOKEN', '')
-    # config.set('credentials', 'HOST', '')
-    # config.set('credentials', 'PORT', '8443')
+    config.set('credentials', 'token', '')
 
 if not config.has_section('configs'):
     config.add_section('configs')
@@ -21,9 +19,7 @@ with open('setting.ini', 'w') as setting:
     config.write(setting)
     setting.close()
 
-TOKEN = config.get('credentials', 'TOKEN')
-# HOST = config.get('credentials', 'HOST')
-# PORT = config.get('credentials', 'PORT')
+TOKEN = config.get('credentials', 'token')
 
 MORNING_ALARM_TIME = 8
 EVENING_ALARM_TIME = 20

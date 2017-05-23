@@ -7,10 +7,12 @@ class Inference(Fuzzification):
     def __init__(self):
         super(Inference, self).__init__()
         self.day = 0
+        self.rain_fall = []
 
     def run(self, when=0):
         f = Fuzzification(when)
         fuzzy_set, self.day = f.get_fuzzyset_and_day()
+        self.rain_fall = f.rain_fall
         res = Rule().rule_evaluation(fuzzy_set)
         cog = Defuzzification().result_text(res)
         return cog

@@ -1,11 +1,16 @@
+#-*- coding: utf-8 -*-
+import re
 import requests
 from bs4 import BeautifulSoup
+
+from fuzzyweather.util.logger import log
 
 
 class Crawling:
     def __init__(self, **where):
         self.__KMA_URL = 'http://www.kma.go.kr/weather/forecast/timeseries.jsp?searchType=INTEREST&wideCode=%s&cityCode=%s&dongCode=%s'
-        self.__DUST_URL = 'https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%EB%AF%B8%EC%84%B8%EB%A8%BC%EC%A7%80'
+        self.__DUST_URL = 'http://www.airkorea.or.kr/dustForecast/'
+
         if where:
             self.__WIDE_CODE = where['WIDE_CODE']
             self.__CITY_CODE = where['CITY_CODE']
@@ -25,25 +30,31 @@ class Crawling:
         else:
             return [i[:today] for i in data]
 
-    def get_dust_inf(self):
-        # 미세먼지
+    # 미세먼지
+    def get_dust_inf(self, when=0):
         dust_soup = BeautifulSoup(requests.get(self.__DUST_URL).text, 'html.parser')
-        dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
-
-        # 미세먼지 가져오기
-        try:
-            rows = dust_table.find('tbody').find_all('tr')
-            dust = ''
-            for row in rows:
-                if row.find('th').text in '대전':
-                    dust = row.find_all('td')[1].text
-            return dust
-        except AttributeError as e:
-            return '오류! @SsangWoo 에게 문의해주세요!'
+        dust_texts = dust_soup.find_all('textarea', attrs={'cols': '104'})
+        if when is 0:
+            return re.findall(re.compile("좋음|보통|나쁨|매우나쁨"), dust_texts[0].text)[0]
+        else:
+            return dust_texts[3].text[9:]
+        # dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
+        #
+        # # 미세먼지 가져오기
+        # try:
+        #     rows = dust_table.find('tbody').find_all('tr')
+        #     dust = ''
+        #     for row in rows:
+        #         if row.find('th').text in '대전':
+        #             dust = row.find_all('td')[1].text
+        #     return dust
+        # except AttributeError as e:
+        #     log.error(e)
+        #     return '오류! @SsangWoo 에게 문의해주세요!'
 
     # day = 0 -> 오늘, day = 1 -> 내일
+    # 기상청
     def get_weather_inf(self, day=0):
-        # 기상청
         soup = BeautifulSoup(requests.get(self._URL).text, 'html.parser')
         table = soup.find('table', attrs={'class': 'forecastNew3'})
         data = []
@@ -90,7 +101,8 @@ class Crawling:
 # 사용방법
 # 오늘 날씨는 no parameter, 내일 날씨는 1
 # dat = Crawling().get_weather_inf()
-# dus = Crawling().get_dust_inf()
+# dus = Crawling().get_dust_inf(1)
+# print(dus)
 # for d in dat:
 #     print(d)
 # print(dus)

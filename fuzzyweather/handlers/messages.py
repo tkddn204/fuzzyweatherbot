@@ -1,9 +1,6 @@
 from fuzzyweather.fuzzy.engine import Inference
 from fuzzyweather.fuzzy.crisp import Crawling
-from fuzzyweather.text import TEXT_WEATHER_LIST, TEXT_WAIT,\
-                              TEXT_TODAY, TEXT_TOMORROW,\
-                              TEXT_FUZZY, TEXT_FUZZY_FORMAT,\
-                              TEXT_CAUTION_TOMORROW
+from fuzzyweather.text import *
 from telegram.chataction import ChatAction
 import emoji
 
@@ -11,6 +8,19 @@ import emoji
 class Messages:
     def __init__(self):
         pass
+
+    @staticmethod
+    def __rain_fall_message(rain_fall):
+        for i in range(rain_fall.count('-')):
+            rain_fall.remove('-')
+        if len(rain_fall) > 0:
+            msg = TEXT_RAIN_FALL
+            if not rain_fall[0].find('mm'):
+                rain_fall[0] += 'mm'
+            msg += '(' + rain_fall[0] + ')\n'
+            return msg
+        else:
+            return ''
 
     @staticmethod
     def __fuzzy_message(res_list):
@@ -38,12 +48,15 @@ class Messages:
             res_list = inference.run(when)
             if when is 0:
                 if inference.day is 0:
-                    dust = Crawling().get_dust_inf()
-                    fuzzy_text = TEXT_TODAY.format(dust)
+                    fuzzy_text = TEXT_TODAY
                 else:
                     fuzzy_text = TEXT_CAUTION_TOMORROW + TEXT_TOMORROW
+                dust = Crawling().get_dust_inf(inference.day)
             else:
+                dust = Crawling().get_dust_inf(1)
                 fuzzy_text = TEXT_TOMORROW
+            fuzzy_text += TEXT_DUST.format(dust)
+            fuzzy_text += self.__rain_fall_message(inference.rain_fall)
             fuzzy_text += self.__fuzzy_message(res_list)
             bot.delete_message(chat_id=chat_id,
                                message_id=msg.message_id)
