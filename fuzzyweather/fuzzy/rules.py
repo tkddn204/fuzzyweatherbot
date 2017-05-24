@@ -41,7 +41,7 @@ class Rule(UseDB):
         for num in range(1, self.__rule_nums+1):
             data = {}
             self.__rule = self.db.get_rules(num)
-            for time in fuzzy_input.keys():
+            for time, value in fuzzy_input.items():
                 data[time] = []
                 # 전건
                 self.__before_evaluation(time, data, fuzzy_input)
