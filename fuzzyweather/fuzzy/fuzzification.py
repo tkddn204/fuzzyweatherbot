@@ -1,5 +1,6 @@
 from fuzzyweather.fuzzy.membership import Membership
 from fuzzyweather.fuzzy.crisp import Crawling
+from fuzzyweather.util.logger import log
 
 AM_LIST = ['03', '06', '09']
 PM_LIST = ['12', '15']
@@ -26,6 +27,7 @@ class Fuzzification(Membership):
     def __choose_data(day):
         # crisp 데이터와 데이터의 날짜를 받아옴
         crisp_data, d = Crawling().get_weather_inf(day)
+        log.error(crisp_data)
         return crisp_data, d
 
     def __split_time(self):
