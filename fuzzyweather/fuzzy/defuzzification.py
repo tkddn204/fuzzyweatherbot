@@ -17,7 +17,7 @@ class Defuzzification(UseDB):
                 for m in mem[me]:  # 여기가 문제였네!
                     sum_top += mem[me][m][1] * result[time][m]
                     sum_bottom += result[time][m]
-                sum_result = sum_top/sum_bottom if sum_top == 0. or sum_bottom == 0. else 0.
+                sum_result = 0. if sum_top == 0. or sum_bottom == 0. else sum_top/sum_bottom
                 after_mem = Membership().seek_after_membership(sum_result)
                 cog_list[time] = {me: [after_mem[0], sum_result]}
         return cog_list
