@@ -46,13 +46,10 @@ class Membership(UseDB):
         return result
 
     def seek_after_membership(self, value):
-        result = []
+        result = ''
         for me in self._after_mem_data:
-            temp = []
-            mem_data_keys = list(self._after_mem_data[me].keys())
-            for m in self._after_mem_data[me]:
-                temp.append(self.__find_linear_membership(
-                    value, self._after_mem_data[me][m]))
-            result.append(mem_data_keys[temp.index(max(temp))])
-
+            temp = 0.
+            for after_key, after_value in self._after_mem_data[me].items():
+                if temp < self.__find_linear_membership(value, after_value):
+                    result = after_key
         return result

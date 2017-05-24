@@ -19,7 +19,7 @@ class Defuzzification(UseDB):
                     sum_bottom += result[time][m]
                 sum_result = 0. if sum_top == 0. or sum_bottom == 0. else sum_top/sum_bottom
                 after_mem = Membership().seek_after_membership(sum_result)
-                cog_list[time] = {me: [after_mem[0], sum_result]}
+                cog_list[time] = {me: [after_mem, sum_result]}
         return cog_list
 
     # 결과를 텍스트로 내보내기
