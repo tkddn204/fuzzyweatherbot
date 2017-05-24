@@ -3,8 +3,6 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-from fuzzyweather.util.logger import log
-
 
 class Crawling:
     def __init__(self, **where):
@@ -35,25 +33,13 @@ class Crawling:
         dust_soup = BeautifulSoup(requests.get(self.__DUST_URL).text, 'html.parser')
         dust_texts = dust_soup.find_all('textarea', attrs={'cols': '104'})
         if when is 0:
-            return re.findall(re.compile("좋음|보통|나쁨|매우나쁨"), dust_texts[0].text)[0]
+            return re.findall(re.compile("좋음|보통|나쁨|매우나쁨"),
+                              dust_texts[0].text)[0]
         else:
             if re.findall(re.compile("모레"), dust_texts[3].text):
                 return dust_texts[2].text[8:]
             else:
                 return dust_texts[3].text[8:]
-        # dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
-        #
-        # # 미세먼지 가져오기
-        # try:
-        #     rows = dust_table.find('tbody').find_all('tr')
-        #     dust = ''
-        #     for row in rows:
-        #         if row.find('th').text in '대전':
-        #             dust = row.find_all('td')[1].text
-        #     return dust
-        # except AttributeError as e:
-        #     log.error(e)
-        #     return '오류! @SsangWoo 에게 문의해주세요!'
 
     # day = 0 -> 오늘, day = 1 -> 내일
     # 기상청

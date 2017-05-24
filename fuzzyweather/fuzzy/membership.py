@@ -26,7 +26,7 @@ class Membership(UseDB):
             value = 0.0
         return value
 
-    def _set_before_membership(self, day_list):
+    def _set_crisp_membership(self, day_list):
         text = ['밤', '오후', '오전']
         result = {}
         # 밤, 오후, 오전 나눔

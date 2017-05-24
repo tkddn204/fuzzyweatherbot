@@ -1,6 +1,5 @@
 from fuzzyweather.fuzzy import UseDB
 from fuzzyweather.fuzzy.membership import Membership
-from fuzzyweather.util.logger import log
 
 
 class Defuzzification(UseDB):

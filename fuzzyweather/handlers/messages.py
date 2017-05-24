@@ -1,4 +1,4 @@
-from fuzzyweather.fuzzy.engine import Inference
+from fuzzyweather.fuzzy.fuzzy_inference import FuzzyInference
 from fuzzyweather.fuzzy.crisp import Crawling
 from fuzzyweather.text import *
 from telegram.chataction import ChatAction
@@ -43,15 +43,15 @@ class Messages:
                                action=ChatAction.TYPING,
                                timeout=30)
 
-            inference = Inference()
+            inference = FuzzyInference()
             when = 0 if text in TEXT_WEATHER_LIST[0] else 1
             res_list = inference.run(when)
             if when is 0:
-                if inference.day is 0:
+                if inference.output_when is 0:
                     fuzzy_text = TEXT_TODAY
                 else:
                     fuzzy_text = TEXT_CAUTION_TOMORROW + TEXT_TOMORROW
-                dust = Crawling().get_dust_inf(inference.day)
+                dust = Crawling().get_dust_inf(inference.output_when)
             else:
                 dust = Crawling().get_dust_inf(1)
                 fuzzy_text = TEXT_TOMORROW

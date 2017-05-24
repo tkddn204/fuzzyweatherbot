@@ -71,11 +71,11 @@ class FuzzyDB:
         data = {}
         variables = self.get_after_variables()
         for var in variables:
-            data[var.variable] = {}
+            data[var] = {}
             ms = AfterMembership.select().where(
-                AfterMembership.variable == var.variable)
+                AfterMembership.variable == var)
             for m in ms:
-                data[var.variable][m.value] = [m.left, m.middle, m.right]
+                data[var][m.value] = [m.left, m.middle, m.right]
         return data
 
     @staticmethod
@@ -86,7 +86,7 @@ class FuzzyDB:
     @staticmethod
     def get_after_variables():
         return AfterMembership.select(AfterMembership.variable)\
-            .distinct().order_by(AfterMembership.variable.asc())
+            .distinct().order_by(AfterMembership.variable.asc()).scalar(as_tuple=True)
 
     @staticmethod
     def get_after_text_and_emoticon(variable='결과'):
