@@ -1,5 +1,6 @@
 from fuzzyweather.fuzzy import UseDB
 from fuzzyweather.fuzzy.membership import Membership
+from fuzzyweather.util.logger import log
 
 
 class Defuzzification(UseDB):
@@ -12,6 +13,7 @@ class Defuzzification(UseDB):
         sum_top = 0.
         sum_bottom = 0.
         cog_list = {}
+        log.error(result)
         for time in result:
             for me in mem:
                 for m in mem[me]:  # 여기가 문제였네!
@@ -20,6 +22,7 @@ class Defuzzification(UseDB):
                 sum_result = 0. if sum_top == 0. or sum_bottom == 0. else sum_top/sum_bottom
                 after_mem = Membership().seek_after_membership(sum_result)
                 cog_list[time] = {me: [after_mem, sum_result]}
+        log.error(cog_list)
         return cog_list
 
     # 결과를 텍스트로 내보내기
