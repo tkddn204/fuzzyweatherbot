@@ -98,7 +98,7 @@ class FuzzyDB:
         return Rules.select(fn.MAX(Rules.rule_num)).scalar()
 
     @staticmethod
-    def get_rules(rule_num=1):
+    def get_rule(rule_num=1):
         return Rules.select().where(Rules.rule_num == rule_num)
 
     # def get_before_rule(self, rule_num=1):

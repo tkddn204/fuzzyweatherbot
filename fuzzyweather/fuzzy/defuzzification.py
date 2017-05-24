@@ -14,15 +14,12 @@ class Defuzzification(UseDB):
         cog_list = {}
         for time in result:
             for me in mem:
-                for m, v in zip(mem[me], result[time]):
-                    sum_top += mem[me][m][1] * result[time][v]
-                    sum_bottom += result[time][v]
-                    if sum_top == 0. or sum_bottom == 0.:
-                        sum_result = 0.
-                    else:
-                        sum_result = sum_top/sum_bottom
-                    after_mem = Membership().seek_after_membership(sum_result)
-                    cog_list[time] = {me: [after_mem[0], sum_result]}
+                for m in mem[me]:  # 여기가 문제였네!
+                    sum_top += mem[me][m][1] * result[time][m]
+                    sum_bottom += result[time][m]
+                sum_result = sum_top/sum_bottom if sum_top == 0. or sum_bottom == 0. else 0.
+                after_mem = Membership().seek_after_membership(sum_result)
+                cog_list[time] = {me: [after_mem[0], sum_result]}
         return cog_list
 
     # 결과를 텍스트로 내보내기
