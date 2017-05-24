@@ -26,6 +26,7 @@ class Fuzzification(Membership):
     def __choose_data(day):
         # crisp 데이터와 데이터의 날짜를 받아옴
         crisp_data, d = Crawling().get_weather_inf(day)
+        print(crisp_data)
         return crisp_data, d
 
     def __split_time(self):
