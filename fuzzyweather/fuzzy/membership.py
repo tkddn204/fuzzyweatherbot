@@ -29,18 +29,19 @@ class Membership(UseDB):
         text = ['밤', '오후', '오전']
         result = {}
         # 밤, 오후, 오전 나눔
-        for i, day in enumerate(day_list):
-            if 0 not in day:
-                result[text[i]] = {}
-                # 기온, 3개 묶음 1개씩 처리
-                for day_data, mem in zip(day, self._before_mem_data.keys()):
-                    result[text[i]][mem] = {}
-                    for m in self._before_mem_data[mem].keys():
-                        left = self._before_mem_data[mem][m][0]
-                        middle = self._before_mem_data[mem][m][1]
-                        right = self._before_mem_data[mem][m][2]
-                        value = self.__find_linear_membership(day_data, left, middle, right)
-                        result[text[i]][mem][m] = value
+        for i, day_ele in enumerate(day_list):
+            if day_ele.count(0.0) >= 3:
+                continue
+            result[text[i]] = {}
+            # 기온, 3개 묶음 1개씩 처리
+            for day_data, mem in zip(day_ele, self._before_mem_data.keys()):
+                result[text[i]][mem] = {}
+                for m in self._before_mem_data[mem].keys():
+                    left = self._before_mem_data[mem][m][0]
+                    middle = self._before_mem_data[mem][m][1]
+                    right = self._before_mem_data[mem][m][2]
+                    value = self.__find_linear_membership(day_data, left, middle, right)
+                    result[text[i]][mem][m] = value
         # for a in result.keys():
         #     for d in result[a].keys():
         #         for k in result[a][k].keys():

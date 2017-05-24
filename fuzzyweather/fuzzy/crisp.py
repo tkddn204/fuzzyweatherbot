@@ -37,7 +37,10 @@ class Crawling:
         if when is 0:
             return re.findall(re.compile("좋음|보통|나쁨|매우나쁨"), dust_texts[0].text)[0]
         else:
-            return dust_texts[3].text[9:]
+            if re.findall(re.compile("모레"), dust_texts[3].text[9:]):
+                return dust_texts[2].text[9:]
+            else:
+                return dust_texts[3].text[9:]
         # dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
         #
         # # 미세먼지 가져오기
@@ -100,9 +103,8 @@ class Crawling:
 
 # 사용방법
 # 오늘 날씨는 no parameter, 내일 날씨는 1
-# dat = Crawling().get_weather_inf()
+# dat = Crawling().get_weather_inf(1)
 # dus = Crawling().get_dust_inf(1)
-# print(dus)
 # for d in dat:
 #     print(d)
 # print(dus)
