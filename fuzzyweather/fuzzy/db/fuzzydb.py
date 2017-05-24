@@ -80,11 +80,13 @@ class FuzzyDB:
 
     @staticmethod
     def get_before_variables():
-        return BeforeMembership.select(BeforeMembership.variable).distinct()
+        return BeforeMembership.select(BeforeMembership.variable)\
+            .distinct().order_by(BeforeMembership.variable.asc())
 
     @staticmethod
     def get_after_variables():
-        return AfterMembership.select(AfterMembership.variable).distinct()
+        return AfterMembership.select(AfterMembership.variable)\
+            .distinct().order_by(AfterMembership.variable.asc())
 
     @staticmethod
     def get_after_text_and_emoticon(variable='결과'):

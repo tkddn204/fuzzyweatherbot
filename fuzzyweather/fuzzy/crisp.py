@@ -38,9 +38,9 @@ class Crawling:
             return re.findall(re.compile("좋음|보통|나쁨|매우나쁨"), dust_texts[0].text)[0]
         else:
             if re.findall(re.compile("모레"), dust_texts[3].text):
-                return dust_texts[2].text[9:]
+                return dust_texts[2].text[8:]
             else:
-                return dust_texts[3].text[9:]
+                return dust_texts[3].text[8:]
         # dust_table = dust_soup.find('div', attrs={'class': 'tb_scroll'})
         #
         # # 미세먼지 가져오기

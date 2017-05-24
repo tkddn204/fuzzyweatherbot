@@ -5,11 +5,11 @@ class Rule(UseDB):
     def __init__(self):
         super(Rule, self).__init__()
         self.__rule_nums = self.db.get_rule_nums()
-        self.__rule = []
 
     # 전건 평가
-    def __before_evaluation(self, time, data, fuzzy_input):
-        for r in self.__rule:
+    @staticmethod
+    def __before_evaluation(rule, time, data, fuzzy_input):
+        for r in rule:
             if r.before_not is 1:
                 insert = 1. - fuzzy_input[time][r.before_variable][r.before_value]
             else:
@@ -17,8 +17,9 @@ class Rule(UseDB):
             data[time].append(insert)
 
     # 전건들의 and, or 평가
-    def __and_or_evaluation(self, time, data):
-        for r in self.__rule:
+    @staticmethod
+    def __and_or_evaluation(rule, time, data):
+        for r in rule:
             if r.and_field or r.or_field:
                 if r.and_field:
                     data[time][1] = data[time][0] if data[time][0] <= data[time][1] else data[time][1]
@@ -30,8 +31,9 @@ class Rule(UseDB):
         data[time] = data[time][0]
 
     # 후건 평가
-    def __after_evaluation(self, time, data):
-        for r in self.__rule:
+    @staticmethod
+    def __after_evaluation(rule, time, data):
+        for r in rule:
             if r.after_variable in ['결과']:
                 data[time] = [r.after_value, data[time]]
 
@@ -40,15 +42,15 @@ class Rule(UseDB):
         rule_eval_list = {}
         for num in range(1, self.__rule_nums+1):
             data = {}
-            self.__rule = self.db.get_rules(num)
+            rule = self.db.get_rules(num)
             for time, value in fuzzy_input.items():
                 data[time] = []
                 # 전건
-                self.__before_evaluation(time, data, fuzzy_input)
+                self.__before_evaluation(rule, time, data, fuzzy_input)
                 # AND, OR 처리
-                self.__and_or_evaluation(time, data)
+                self.__and_or_evaluation(rule, time, data)
                 # 후건
-                self.__after_evaluation(time, data)
+                self.__after_evaluation(rule, time, data)
             rule_eval_list[num] = data
         # for r in rule_eval_list:
         #     print(r, rule_eval_list[r].items())

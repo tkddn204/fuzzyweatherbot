@@ -8,7 +8,8 @@ class Membership(UseDB):
         self._after_mem_data = self.db.get_after_membership()
 
     @staticmethod
-    def __find_linear_membership(data, left, middle, right):
+    def __find_linear_membership(data, ms):
+        left, middle, right = ms
         infinite = 99999
         if data <= left or data >= right:
             if left is -infinite or right is infinite:
@@ -33,19 +34,15 @@ class Membership(UseDB):
             if day_ele.count(0.0) >= 3:
                 continue
             result[text[i]] = {}
-            # 기온, 3개 묶음 1개씩 처리
-            for day_data, mem in zip(day_ele, self._before_mem_data.keys()):
-                result[text[i]][mem] = {}
-                for m in self._before_mem_data[mem].keys():
-                    left = self._before_mem_data[mem][m][0]
-                    middle = self._before_mem_data[mem][m][1]
-                    right = self._before_mem_data[mem][m][2]
-                    value = self.__find_linear_membership(day_data, left, middle, right)
-                    result[text[i]][mem][m] = value
+            # 구름량, 기온, 습도 순으로 3개 묶음 1개씩 처리
+            for day_data, mem in zip(day_ele, self.db.get_before_variables()):
+                result[text[i]][mem.variable] = {}
+                for key, ms in self._before_mem_data[mem.variable].items():
+                    value = self.__find_linear_membership(day_data, ms)
+                    result[text[i]][mem.variable][key] = value
         # for a in result.keys():
         #     for d in result[a].keys():
-        #         for k in result[a][k].keys():
-        #             print(result[a][d][k])
+        #             print(a, d, result[a][d])
         return result
 
     def seek_after_membership(self, value):
@@ -54,10 +51,8 @@ class Membership(UseDB):
             temp = []
             mem_data_keys = list(self._after_mem_data[me].keys())
             for m in self._after_mem_data[me]:
-                temp.append(self.__find_linear_membership(value,
-                                                          self._after_mem_data[me][m][0],
-                                                          self._after_mem_data[me][m][1],
-                                                          self._after_mem_data[me][m][2]))
+                temp.append(self.__find_linear_membership(
+                    value, self._after_mem_data[me][m]))
             result.append(mem_data_keys[temp.index(max(temp))])
 
         return result

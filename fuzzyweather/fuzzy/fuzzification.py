@@ -51,8 +51,8 @@ class Fuzzification(Membership):
             # 강수량은 리스트 그대로(따로 뺌)
             for m, row in enumerate([3]):
                 rain_fall = [day_list[i][k][row] for k in range(n)]
-            # 기온, 습도, 강수확률(구름량)
-            for m, row in enumerate([4, 6, 2]):
+            # 강수확률(구름량), 기온, 습도
+            for m, row in enumerate([2, 4, 6]):
                 avg_list[i][m] = float(sum(int(day_list[i][k][row]) for k in range(n))/n)
         return avg_list, rain_fall
 
