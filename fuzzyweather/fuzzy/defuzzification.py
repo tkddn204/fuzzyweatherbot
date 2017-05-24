@@ -10,19 +10,18 @@ class Defuzzification(UseDB):
     # 무게중심법 계산
     def __center_of_gravity(self, result):
         mem = self.db.get_after_membership()
-        sum_top = 0.
-        sum_bottom = 0.
         cog_list = {}
-        log.error(result)
         for time in result:
             for me in mem:
+                sum_top = 0.
+                sum_bottom = 0.
                 for m in mem[me]:  # 여기가 문제였네!
                     sum_top += mem[me][m][1] * result[time][m]
                     sum_bottom += result[time][m]
+                    log.error([sum_top, sum_bottom, mem[me][m][1], result[time][m]])
                 sum_result = 0. if sum_top == 0. or sum_bottom == 0. else sum_top/sum_bottom
                 after_mem = Membership().seek_after_membership(sum_result)
                 cog_list[time] = {me: [after_mem, sum_result]}
-        log.error(cog_list)
         return cog_list
 
     # 결과를 텍스트로 내보내기
