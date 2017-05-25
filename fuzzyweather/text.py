@@ -14,10 +14,12 @@ TEXT_HELP = '오늘이나 내일의 날씨가 어떨지 궁금하시면\n' \
 TEXT_WAIT = '잠시만 기다려주세요...'
 TEXT_TODAY = '[한밭대] <오늘의 날씨>\n'
 
+TEXT_CAUTION_TOMORROW = '※ 저녁 8시 30분 이후는 내일의 날씨를 보여드립니다.\n'
+TEXT_TOMORROW = '[한밭대] <내일의 날씨>\n'
+
+TEXT_WEATHER = '현재 날씨 : {0} {1}\n'
 TEXT_DUST = '미세먼지 : {0}\n'
 TEXT_RAIN_FALL = '비가 올 수 있으니 외출할 때는 우산을 챙겨주세요!'
 
-TEXT_CAUTION_TOMORROW = '※ 저녁 8시 30분 이후는 내일의 날씨를 보여드립니다.\n'
-TEXT_TOMORROW = '[한밭대] <내일의 날씨>\n'
-TEXT_FUZZY = '\n:speech_balloon: 퍼지 분석 결과:\n'
+TEXT_FUZZY = ':speech_balloon: 퍼지 분석 결과:\n'
 TEXT_FUZZY_FORMAT = '[{0:.1f}] {1} {2}에는 {3}\n'

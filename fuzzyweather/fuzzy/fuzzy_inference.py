@@ -6,26 +6,25 @@ from fuzzyweather.util.logger import log
 
 class FuzzyInference:
     def __init__(self):
-        self.output_when = 0
-        self.rain_fall = []
+        self.found_when = 0
+        self.weather_list = []
+        self.rain_fall_list = []
 
     def run(self, when=0):
-        fuzzy_set, self.output_when, self.rain_fall = \
-            Fuzzification().get_fuzzy_set_and_information(when)
-        # log.error(fuzzy_set)
+        fuzzy_set, self.found_when, self.weather_list, self.rain_fall_list = \
+            Fuzzification().get_fuzzy_set_and_crisp_data(when)
         res = InferenceEngine().rule_evaluation(fuzzy_set)
-        # log.error(res)
-        cog = Defuzzification().result_text(res)
-        return cog
+        result_list = Defuzzification().to_crisp_list(res)
+        return result_list
 
-    def test(self, when=0):
-        fuzzy_set, self.output_when, self.rain_fall = \
-            Fuzzification().get_fuzzy_set_and_information(when)
-        log.error(fuzzy_set)
-        res = InferenceEngine().rule_evaluation(fuzzy_set)
-        log.error(res)
-        cog = Defuzzification().result_text(res)
-        return cog
+    # def test(self, when=0):
+    #     fuzzy_set, self.found_when, self.weather_list, self.rain_fall_list = \
+    #         Fuzzification().get_fuzzy_set_and_crisp_data(when)
+    #     log.error(fuzzy_set)
+    #     res = InferenceEngine().rule_evaluation(fuzzy_set)
+    #     log.error(res)
+    #     result_list = Defuzzification().to_crisp_list(res)
+    #     return result_list
 
-# a = FuzzyInference().test(0)
+# a = FuzzyInference().test(1)
 # print(a)
