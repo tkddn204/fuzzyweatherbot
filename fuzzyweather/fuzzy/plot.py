@@ -9,7 +9,7 @@ class Graph(UseDB):
     def __init__(self):
         super(Graph, self).__init__()
 
-    def draw(self):
+    def before_draw(self):
         fig = plt.figure()
         before = self.db.get_before_membership()
         for i, [variable, data] in enumerate(before.items()):
@@ -36,4 +36,28 @@ class Graph(UseDB):
                 ax.plot(x2, y2, color='black')
         plt.show()
 
-Graph().draw()
+    def after_drow(self):
+        fig = plt.figure()
+        after = self.db.get_after_membership()
+        ax = fig.add_subplot(1, 1, 1)
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 1)
+        for data in after:
+            ax.set_ylabel(data)
+            for value, data_list in after[data].items():
+                if data_list[0] < 0.0:
+                    data_list[0] = -1.0
+                elif data_list[2] > 100.0:
+                    data_list[2] = 101.0
+                print(data_list)
+                ran = range(int(data_list[1]) + 2)
+                x = [a for a in ran]
+                y = [(b - data_list[0]) / (data_list[1] - data_list[0]) for b in ran]
+                ax.plot(x, y, color='black')
+                ran = range(int(data_list[2]) + 2)
+                x2 = [a for a in ran]
+                y2 = [(b - data_list[2]) / (data_list[1] - data_list[2]) for b in ran]
+                ax.plot(x2, y2, color='black')
+        plt.show()
+
+Graph().after_drow()

@@ -9,8 +9,7 @@ from fuzzyweather.util.timer import get_season
 class FuzzyDB:
     def __init__(self):
         db.get_conn()
-        db.create_tables([BeforeMembership, AfterMembership,
-                          Rules], safe=True)
+        db.create_tables([BeforeMembership, AfterMembership, Rules], safe=True)
         self.__init_db()
 
     @staticmethod
@@ -56,27 +55,29 @@ class FuzzyDB:
 
     def get_before_membership(self):
         season = get_season()
-        data = {}
+        result_before_membership = {}
         variables = self.get_before_variables()
         for var in variables:
-            data[var.variable] = {}
-            ms = BeforeMembership.select().where(
+            result_before_membership[var.variable] = {}
+            before_membership = BeforeMembership.select().where(
                 BeforeMembership.season == season,
                 BeforeMembership.variable == var.variable)
-            for m in ms:
-                data[var.variable][m.value] = [m.left, m.middle, m.right]
-        return data
+            for before in before_membership:
+                result_before_membership[var.variable][before.value] =\
+                    [before.left, before.middle, before.right]
+        return result_before_membership
 
     def get_after_membership(self):
-        data = {}
+        result_after_membership = {}
         variables = self.get_after_variables()
         for var in variables:
-            data[var] = {}
-            ms = AfterMembership.select().where(
+            result_after_membership[var] = {}
+            after_membership = AfterMembership.select().where(
                 AfterMembership.variable == var)
-            for m in ms:
-                data[var][m.value] = [m.left, m.middle, m.right]
-        return data
+            for after in after_membership:
+                result_after_membership[var][after.value] =\
+                    [after.left, after.middle, after.right]
+        return result_after_membership
 
     @staticmethod
     def get_before_variables():
@@ -88,10 +89,9 @@ class FuzzyDB:
         return AfterMembership.select(AfterMembership.variable)\
             .distinct().order_by(AfterMembership.variable.asc()).scalar(as_tuple=True)
 
-    @staticmethod
-    def get_after_text_and_emoticon(variable='결과'):
+    def get_after_text_and_emoticon(self):
         return AfterMembership.select(AfterMembership.value, AfterMembership.text, AfterMembership.emoticon)\
-            .where(AfterMembership.variable == variable)
+            .where(AfterMembership.variable == self.get_after_variables()[0])
 
     @staticmethod
     def get_rule_nums():

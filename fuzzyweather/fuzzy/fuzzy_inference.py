@@ -7,11 +7,11 @@ from fuzzyweather.util.logger import log
 class FuzzyInference:
     def __init__(self):
         self.found_when = 0
-        self.weather_list = []
+        self.weather_dic = {}
         self.rain_fall_list = []
 
     def run(self, when=0):
-        fuzzy_set, self.found_when, self.weather_list, self.rain_fall_list = \
+        fuzzy_set, self.found_when, self.weather_dic, self.rain_fall_list = \
             Fuzzification().get_fuzzy_set_and_crisp_data(when)
         res = InferenceEngine().rule_evaluation(fuzzy_set)
         result_list = Defuzzification().to_crisp_list(res)

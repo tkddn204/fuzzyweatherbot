@@ -11,6 +11,7 @@ class Handlers(Commands, Messages):
         self._handlers = [
             CommandHandler('start', self.command_start),
             CommandHandler('help', self.command_help),
+            CommandHandler(['membership', 'ms'], self.command_membership),
             MessageHandler(Filters.text, self.message_handle),
         ]
 

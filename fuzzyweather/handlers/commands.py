@@ -1,4 +1,6 @@
-from fuzzyweather.text import TEXT_START, TEXT_HELP, KEYBOARD_SELECT
+from fuzzyweather.text import TEXT_START, TEXT_HELP, KEYBOARD_SELECT,\
+                              TEXT_MEMBERSHIP, TEXT_BEFORE_MEMBERSHIP,\
+                              TEXT_AFTER_MEMBERSHIP
 from telegram import ReplyKeyboardMarkup
 
 
@@ -22,3 +24,16 @@ class Commands:
         bot.sendMessage(
             update.message.chat_id,
             text=TEXT_HELP)
+
+    def command_membership(self, bot, update):
+        bot.sendMessage(
+            update.message.chat_id,
+            text=TEXT_MEMBERSHIP)
+        bot.send_photo(
+            update.message.chat_id,
+            open('fuzzyweather/fuzzy/membership_images/before_membership.png', 'rb'),
+            caption=TEXT_BEFORE_MEMBERSHIP)
+        bot.send_photo(
+            update.message.chat_id,
+            open('fuzzyweather/fuzzy/membership_images/after_membership.png', 'rb'),
+            caption=TEXT_AFTER_MEMBERSHIP)

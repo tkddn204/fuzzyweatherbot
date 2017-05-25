@@ -1,4 +1,3 @@
-# 텍스트를 받아와서 시간으로 바꾸는 곳.. 파일명이 딱히 생각이 안나서 timer로 함
 from datetime import date, datetime
 
 Y = 2000 # dummy leap year to allow input X-02-29 (leap day)

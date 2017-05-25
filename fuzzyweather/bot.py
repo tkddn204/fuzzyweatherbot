@@ -24,6 +24,10 @@ def main():
     dp = updater.dispatcher
     add_handlers(dp)
 
+    # 매일 아침 8시 알람 등록
+    # if not updater.job_queue.jobs():
+    #     updater.job_queue.run_daily()
+
     # DB 초기화
     FuzzyDB().__init__()
 
