@@ -46,45 +46,56 @@ class Messages:
                     time, result_list[time][0])
         return fuzzy_text
 
+    def fuzzy_weather_message(self, text):
+        inference_engine = FuzzyInference()
+        if isinstance(text, str):
+            when = 0 if text in TEXT_WEATHER_LIST[0] else 1
+        else:
+            when = text
+        res_list = inference_engine.run(when)
+
+        # when_text
+        if when is 0:
+            if inference_engine.found_when is 0:
+                when_text = TEXT_TODAY
+            else:
+                when_text = TEXT_CAUTION_TOMORROW + TEXT_TOMORROW
+            dust = Crawling().get_dust_inf(inference_engine.found_when)
+        else:
+            dust = Crawling().get_dust_inf(1)
+            when_text = TEXT_TOMORROW
+
+        # crisp_text
+        crisp_text = self.__weather_message(inference_engine.weather_dic)
+        crisp_text += TEXT_DUST.format(dust)
+        crisp_text += self.__rain_fall_message(inference_engine.rain_fall_list)
+
+        # fuzzy_text
+        fuzzy_text = self.__fuzzy_message(res_list)
+
+        when_and_crisp_text = emoji.emojize(when_text+crisp_text, use_aliases=True)
+        fuzzy_text = emoji.emojize(fuzzy_text, use_aliases=True)
+
+        return when_and_crisp_text, fuzzy_text
+
     def message_handle(self, bot, update):
         text = update.message.text
 
         if text in TEXT_WEATHER_LIST:
             chat_id = update.message.chat_id
-            msg = bot.sendMessage(chat_id,
-                                  text=TEXT_WAIT)
+            wait_message = bot.sendMessage(chat_id,
+                                           text=TEXT_WAIT)
             bot.send_chat_action(chat_id,
                                  action=ChatAction.TYPING,
                                  timeout=20)
 
-            inference_engine = FuzzyInference()
-            when = 0 if text in TEXT_WEATHER_LIST[0] else 1
-            res_list = inference_engine.run(when)
-
-            # when_text
-            if when is 0:
-                if inference_engine.found_when is 0:
-                    when_text = TEXT_TODAY
-                else:
-                    when_text = TEXT_CAUTION_TOMORROW + TEXT_TOMORROW
-                dust = Crawling().get_dust_inf(inference_engine.found_when)
-            else:
-                dust = Crawling().get_dust_inf(1)
-                when_text = TEXT_TOMORROW
-
-            # crisp_text
-            crisp_text = self.__weather_message(inference_engine.weather_dic)
-            crisp_text += TEXT_DUST.format(dust)
-            crisp_text += self.__rain_fall_message(inference_engine.rain_fall_list)
-
-            # fuzzy_text
-            fuzzy_text = self.__fuzzy_message(res_list)
+            when_and_crisp_text, fuzzy_text = self.fuzzy_weather_message(text)
 
             bot.delete_message(chat_id=chat_id,
-                               message_id=msg.message_id)
+                               message_id=wait_message.message_id)
             bot.sendMessage(chat_id=chat_id,
-                            text=emoji.emojize(when_text+crisp_text, use_aliases=True))
+                            text=when_and_crisp_text)
             bot.sendMessage(chat_id=chat_id,
-                            text=emoji.emojize(fuzzy_text, use_aliases=True))
+                            text=fuzzy_text)
         else:
             pass
