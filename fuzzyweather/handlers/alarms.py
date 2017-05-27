@@ -15,7 +15,7 @@ class Alarms:
             Messages().fuzzy_weather_message(when)
 
         bot.sendMessage(channel_id,
-                        text='{0}\n{1}'.format(when_and_crisp_text, fuzzy_text))
+                        text='{0} {1}'.format(when_and_crisp_text, fuzzy_text))
 
     def daily_alarm_to_channel(self, channel_id, when_list, job_queue):
             for when in when_list:

@@ -1,8 +1,12 @@
+import re
+import emoji
+
+from telegram.chataction import ChatAction
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+
 from fuzzyweather.fuzzy.fuzzy_inference import FuzzyInference
 from fuzzyweather.fuzzy.crisp import Crawling
 from fuzzyweather.text import *
-from telegram.chataction import ChatAction
-import emoji
 
 
 class Messages:
@@ -46,13 +50,42 @@ class Messages:
                     time, result_list[time][0])
         return fuzzy_text
 
-    def fuzzy_weather_message(self, text):
+    @staticmethod
+    def __fuzzy_debug_message(fuz_list, rul_list):
+        msg = ':chart_with_upwards_trend: 퍼지화 결과'
+        time_list = ['오전', '오후', '밤']
+        for time in time_list:
+            if time in fuz_list:
+                fuz_item = fuz_list[time]
+                msg += '\n[{0}]'.format(time)
+                for variable, fuz_value in fuz_item.items():
+                    msg += '\n ◇ {0} :'.format(variable)
+                    for membership, num in fuz_value.items():
+                        if num > 0.0:
+                            msg += '\n - {0} : {1:.2f}'.format(membership, num)
+
+        msg += '\n\n :chart_with_downwards_trend: 규칙 평가 결과'
+        for time in time_list:
+            if time in rul_list:
+                rul_item = rul_list[time]
+                msg += '\n [{0}]'.format(time)
+                for membership, num in rul_item.items():
+                    if num > 0.0:
+                        msg += '\n - {0} : {1:.2f}'.format(membership, num)
+
+        return msg + '\n'
+
+    def fuzzy_weather_message(self, when=0, debug=''):
         inference_engine = FuzzyInference()
-        if isinstance(text, str):
-            when = 0 if text in TEXT_WEATHER_LIST[0] else 1
+
+        # fuzzy_text
+        fuzzy_text = ''
+        if debug is 'debug':
+            res_list, fuz_list, rul_list = inference_engine.debug(when)
+            fuzzy_text += self.__fuzzy_debug_message(fuz_list, rul_list)
         else:
-            when = text
-        res_list = inference_engine.run(when)
+            res_list = inference_engine.run(when)
+        fuzzy_text += self.__fuzzy_message(res_list)
 
         # when_text
         if when is 0:
@@ -70,18 +103,15 @@ class Messages:
         crisp_text += TEXT_DUST.format(dust)
         crisp_text += self.__rain_fall_message(inference_engine.rain_fall_list)
 
-        # fuzzy_text
-        fuzzy_text = self.__fuzzy_message(res_list)
-
         when_and_crisp_text = emoji.emojize(when_text+crisp_text, use_aliases=True)
         fuzzy_text = emoji.emojize(fuzzy_text, use_aliases=True)
-
         return when_and_crisp_text, fuzzy_text
 
     def message_handle(self, bot, update):
         text = update.message.text
-
-        if text in TEXT_WEATHER_LIST:
+        regex_text = re.compile("오늘|내일").search(text)
+        if regex_text:
+            regex_text = regex_text.group()
             chat_id = update.message.chat_id
             wait_message = bot.sendMessage(chat_id,
                                            text=TEXT_WAIT)
@@ -89,13 +119,20 @@ class Messages:
                                  action=ChatAction.TYPING,
                                  timeout=20)
 
-            when_and_crisp_text, fuzzy_text = self.fuzzy_weather_message(text)
+            when = 0 if regex_text in TEXT_WEATHER_LIST[0] else 1
+            debug = 'debug' if '디버그' in text else ''
+            when_and_crisp_text, fuzzy_text = \
+                self.fuzzy_weather_message(when, debug)
 
             bot.delete_message(chat_id=chat_id,
                                message_id=wait_message.message_id)
             bot.sendMessage(chat_id=chat_id,
                             text=when_and_crisp_text)
             bot.sendMessage(chat_id=chat_id,
-                            text=fuzzy_text)
+                            text=fuzzy_text,)
+                            # reply_markup=InlineKeyboardMarkup([
+                            #     [InlineKeyboardButton(text=INLINE_GRAPH_SHOW,
+                            #                           callback_data='show')]
+                            # ]))
         else:
             pass

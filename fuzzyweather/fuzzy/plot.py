@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib import font_manager, rc
-font_name = font_manager.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name()
+font_name = font_manager.FontProperties(fname='c:/Windows/Fonts/malgun.ttf').get_name()
 rc('font', family=font_name)
 from fuzzyweather.fuzzy import UseDB
 
@@ -59,5 +59,17 @@ class Graph(UseDB):
                 y2 = [(b - data_list[2]) / (data_list[1] - data_list[2]) for b in ran]
                 ax.plot(x2, y2, color='black')
         plt.show()
+
+    def result_draw(self, result=[50, 50, 50]):
+        num_bars = len(data)
+        positions = range(1, num_bars + 1)
+        plt.barh(positions, data, align='center')
+        plt.yticks(positions, labels)
+        plt.xlabel('Temperature')
+        plt.ylabel('Year')
+        plt.title('Average Temperature in Seoul 2010 ~ 2014')
+        plt.grid()
+        plt.show()
+
 
 Graph().after_drow()

@@ -17,6 +17,15 @@ class FuzzyInference:
         result_list = Defuzzification().to_crisp_list(res)
         return result_list
 
+    def debug(self, when=0):
+        fuzzy_set, self.found_when, self.weather_dic, self.rain_fall_list = \
+            Fuzzification().get_fuzzy_set_and_crisp_data(when)
+        debug_fuzzy_set_list = fuzzy_set
+        res = InferenceEngine().rule_evaluation(fuzzy_set)
+        debug_rule_evaluation_list = res
+        result_list = Defuzzification().to_crisp_list(res)
+        return result_list, debug_fuzzy_set_list, debug_rule_evaluation_list
+
     # def test(self, when=0):
     #     fuzzy_set, self.found_when, self.weather_list, self.rain_fall_list = \
     #         Fuzzification().get_fuzzy_set_and_crisp_data(when)
