@@ -1,3 +1,4 @@
+import os
 import re
 import emoji
 
@@ -5,6 +6,7 @@ from telegram.chataction import ChatAction
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 from fuzzyweather.fuzzy.fuzzy_inference import FuzzyInference
+from fuzzyweather.fuzzy.plot import Graph
 from fuzzyweather.fuzzy.crisp import Crawling
 from fuzzyweather.text import *
 
@@ -48,6 +50,7 @@ class Messages:
                 fuzzy_text += TEXT_FUZZY_FORMAT.format(
                     result_list[time][2], result_list[time][1],
                     time, result_list[time][0])
+
         return fuzzy_text
 
     @staticmethod
@@ -87,6 +90,12 @@ class Messages:
             res_list = inference_engine.run(when)
         fuzzy_text += self.__fuzzy_message(res_list)
 
+        # fuzzy image
+        img_name = Graph().result_file_name(res_list, when)
+        path = 'fuzzyweather/fuzzy/result_images/'
+        if not os.path.exists(path+img_name):
+            Graph().draw_result_list(res_list, img_name, when)
+
         # when_text
         if when is 0:
             if inference_engine.found_when is 0:
@@ -105,7 +114,7 @@ class Messages:
 
         when_and_crisp_text = emoji.emojize(when_text+crisp_text, use_aliases=True)
         fuzzy_text = emoji.emojize(fuzzy_text, use_aliases=True)
-        return when_and_crisp_text, fuzzy_text
+        return when_and_crisp_text, fuzzy_text, img_name
 
     def message_handle(self, bot, update):
         text = update.message.text
@@ -121,7 +130,7 @@ class Messages:
 
             when = 0 if regex_text in TEXT_WEATHER_LIST[0] else 1
             debug = 'debug' if '디버그' in text else ''
-            when_and_crisp_text, fuzzy_text = \
+            when_and_crisp_text, fuzzy_text, img_name = \
                 self.fuzzy_weather_message(when, debug)
 
             bot.delete_message(chat_id=chat_id,
@@ -129,10 +138,10 @@ class Messages:
             bot.sendMessage(chat_id=chat_id,
                             text=when_and_crisp_text)
             bot.sendMessage(chat_id=chat_id,
-                            text=fuzzy_text,)
-                            # reply_markup=InlineKeyboardMarkup([
-                            #     [InlineKeyboardButton(text=INLINE_GRAPH_SHOW,
-                            #                           callback_data='show')]
-                            # ]))
+                            text=fuzzy_text,
+                            reply_markup=InlineKeyboardMarkup([
+                                [InlineKeyboardButton(text=INLINE_GRAPH_SHOW,
+                                                      callback_data='show {0}'.format(img_name))]
+                            ]))
         else:
             pass
