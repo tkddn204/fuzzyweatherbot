@@ -94,7 +94,7 @@ class Messages:
         img_name = Graph().result_file_name(res_list, when)
         path = 'fuzzyweather/fuzzy/result_images/'
         if not os.path.exists(path+img_name):
-            Graph().draw_result_list(res_list, img_name, when)
+            Graph().draw_result_list(res_list, img_name, inference_engine.found_when)
 
         # when_text
         if when is 0:

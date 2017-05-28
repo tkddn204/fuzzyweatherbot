@@ -1,10 +1,15 @@
 from datetime import date, timedelta
 from fuzzyweather.fuzzy import UseDB
 
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 from matplotlib import font_manager, rc
-font_name = font_manager.FontProperties(fname='fuzzyweather/fuzzy/fonts/NanumGothicLight.ttf').get_name()
-rc('font', family=font_name)
+# font_name = font_manager.FontProperties(fname='NanumGothicLight.ttf').get_name()
+#rc('font', family=font_name)
+rc('font', family='NanumGothic')
+rc('text', usetex='false')
 
 
 class Graph(UseDB):
@@ -36,7 +41,7 @@ class Graph(UseDB):
                 x2 = [a for a in ran]
                 y2 = [(b-data_list[2])/(data_list[1]-data_list[2]) for b in ran]
                 ax.plot(x2, y2, color='black')
-        plt.show()
+        # plt.show()
 
     def after_drow(self):
         fig = plt.figure()
@@ -60,7 +65,7 @@ class Graph(UseDB):
                 x2 = [a for a in ran]
                 y2 = [(b - data_list[2]) / (data_list[1] - data_list[2]) for b in ran]
                 ax.plot(x2, y2, color='black')
-        plt.show()
+        # plt.show()
 
     def result_file_name(self, res_list, when=0):
         time_list = ['오전', '오후', '밤']
