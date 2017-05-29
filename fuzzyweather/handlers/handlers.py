@@ -14,6 +14,7 @@ class Handlers(Commands, Messages, Inlines):
             CommandHandler('start', self.command_start),
             CommandHandler('help', self.command_help),
             CommandHandler(['membership', 'ms'], self.command_membership),
+            CommandHandler('alarm', self.command_alarm, pass_job_queue=True),
             MessageHandler(Filters.text, self.message_handle),
             CallbackQueryHandler(self.callback_handler)
         ]

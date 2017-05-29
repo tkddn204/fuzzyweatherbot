@@ -1,5 +1,6 @@
 from fuzzyweather.util.timer import get_hour_time
 from fuzzyweather.handlers.messages import Messages
+from fuzzyweather.util.config import CHANNEL_ID
 
 
 class Alarms:
@@ -7,11 +8,15 @@ class Alarms:
         pass
 
     def alarm_update(self, bot, job):
-        context_list = job if isinstance(job, str) else job.context
-        channel_id, when = context_list.split(" ")
+        try:
+            context_list = job if isinstance(job, str) else job.context
+            channel_id, when = context_list.split(" ")
+        except AttributeError:
+            channel_id, when = CHANNEL_ID, 0
+
         when = 1 if int(when) >= 18 else 0
 
-        when_and_crisp_text, fuzzy_text = \
+        when_and_crisp_text, fuzzy_text, img_name = \
             Messages().fuzzy_weather_message(when)
 
         bot.sendMessage(channel_id,

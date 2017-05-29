@@ -1,3 +1,4 @@
+from fuzzyweather.handlers.alarms import Alarms
 from fuzzyweather.text import TEXT_START, TEXT_HELP, KEYBOARD_SELECT,\
                               TEXT_MEMBERSHIP, TEXT_BEFORE_MEMBERSHIP,\
                               TEXT_AFTER_MEMBERSHIP
@@ -37,3 +38,6 @@ class Commands:
             update.message.chat_id,
             open('fuzzyweather/fuzzy/membership_images/after_membership.png', 'rb'),
             caption=TEXT_AFTER_MEMBERSHIP)
+
+    def command_alarm(self, bot, update, job_queue):
+        Alarms().alarm_update(bot, job_queue)
