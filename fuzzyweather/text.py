@@ -1,10 +1,11 @@
-TEXT_WEATHER_LIST = ['오늘', '내일']
-
 KEYBOARD_SELECT = [
-    TEXT_WEATHER_LIST
+    ['오늘의 날씨', '내일의 날씨']
 ]
+
 INLINE_GRAPH_SHOW = '결과 그래프 보기'
 INLINE_GRAPH_HIDE = '결과 그래프 닫기'
+
+TEXT_WEATHER_LIST = ['오늘', '내일']
 
 TEXT_START = '안녕하세요 {user_name}님, 저는 {bot_name} 입니다!\n' \
              '한밭대 지역의 날씨를 퍼지 분석을 해서 알려준답니다!\n' \
