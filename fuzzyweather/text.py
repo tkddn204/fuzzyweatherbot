@@ -25,7 +25,7 @@ TEXT_TOMORROW = '[한밭대] <내일의 날씨>\n'
 
 TEXT_WEATHER = '{0} 대체로 {1}\n'
 TEXT_DUST = ':mask: 미세먼지는 {0}\n'
-TEXT_RAIN_FALL = '비가 올 수 있으니 외출할 때는 우산을 챙겨주세요!\n'
+TEXT_RAIN_FALL = ':umbrella: {0}에 비가 올 수 있어요!(예상 강수량 : {1}mm)\n'
 
 TEXT_FUZZY = '\n:bar_chart: 퍼지 분석 결과\n'
 TEXT_FUZZY_FORMAT = '[{0:.1f}] {1} {2}에는 {3}\n'

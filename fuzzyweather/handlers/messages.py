@@ -25,21 +25,37 @@ class Messages:
             '흐리고 비': ':umbrella:'}
         temp_weather = []
         for key, weather in weather_dic.items():
-            temp_weather.append(max(weather, key=weather.count))
+            for weather_item in weather:
+                temp_weather.append(weather_item)
         max_weather = max(temp_weather, key=temp_weather.count)
         return TEXT_WEATHER.format(weather_compare_list[max_weather], max_weather)
 
     @staticmethod
-    def __rain_fall_message(rain_fall_list):
-        for i in range(rain_fall_list.count('-')):
-            rain_fall_list.remove('-')
-        if len(rain_fall_list) > 0:
-            if rain_fall_list[0].find('mm'):
-                rain_fall_list[0] = rain_fall_list[0][:-2]
-            message = '(강수량 : ' + rain_fall_list[0] + 'mm)'
-            return message + TEXT_RAIN_FALL
-        else:
-            return ''
+    def __rain_fall_message(rain_fall_dic):
+        time_list = ['밤', '오후', '오전']
+        rain_fall_mm_msg = ''
+        time_msg = ''
+        for index, rain in rain_fall_dic.items():
+            for i in range(rain.count('-')):
+                rain.remove('-')
+            if len(rain) > 0:
+                if len(rain) > 1:
+                    temp_index = 0
+                    for i, rain_item in enumerate(rain):
+                        if int(rain_item[0]) > temp_index:
+                            temp_index = i
+                    rain[0] = rain[temp_index]
+                if rain[0].find('mm') is not -1:
+                    rain[0] = rain[0][:-2]
+                rain_fall_mm_msg = rain[0]
+                time_msg += time_list[index] + ', '
+            else:
+                if index is 2:
+                    return ''
+                else:
+                    continue
+
+        return TEXT_RAIN_FALL.format(time_msg[:-2], rain_fall_mm_msg)
 
     @staticmethod
     def __fuzzy_message(result_list):
@@ -110,7 +126,7 @@ class Messages:
         # crisp_text
         crisp_text = self.__weather_message(inference_engine.weather_dic)
         crisp_text += TEXT_DUST.format(dust)
-        crisp_text += self.__rain_fall_message(inference_engine.rain_fall_list)
+        crisp_text += self.__rain_fall_message(inference_engine.rain_fall_dic)
 
         when_and_crisp_text = emoji.emojize(when_text+crisp_text, use_aliases=True)
         fuzzy_text = emoji.emojize(fuzzy_text, use_aliases=True)

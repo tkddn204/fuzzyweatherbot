@@ -8,11 +8,11 @@ class FuzzyInference:
     def __init__(self):
         self.found_when = 0
         self.weather_dic = {}
-        self.rain_fall_list = []
+        self.rain_fall_dic = []
 
     def run(self, when=0):
         # crisp 정보를 받아오고 퍼지화 진행
-        fuzzy_set, self.found_when, self.weather_dic, self.rain_fall_list = \
+        fuzzy_set, self.found_when, self.weather_dic, self.rain_fall_dic = \
             Fuzzification().get_fuzzy_set_and_crisp_data(when)
 
         # 규칙 평가 진행
@@ -23,7 +23,7 @@ class FuzzyInference:
         return result_list
 
     def debug(self, when=0):
-        fuzzy_set, self.found_when, self.weather_dic, self.rain_fall_list = \
+        fuzzy_set, self.found_when, self.weather_dic, self.rain_fall_dic = \
             Fuzzification().get_fuzzy_set_and_crisp_data(when)
         debug_fuzzy_set_list = fuzzy_set
         res = InferenceEngine().rule_evaluation(fuzzy_set)
