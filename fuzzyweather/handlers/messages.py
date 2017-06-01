@@ -50,8 +50,11 @@ class Messages:
                 rain_fall_mm_msg = rain[0]
                 time_msg += time_list[index] + ', '
             else:
-                if index is 2:
-                    return ''
+                if rain_fall_mm_msg is '':
+                    if index is len(rain_fall_dic)-1:
+                        return ''
+                    else:
+                        continue
                 else:
                     continue
 
