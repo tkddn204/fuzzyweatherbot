@@ -28,7 +28,10 @@ class Messages:
             for weather_item in weather:
                 temp_weather.append(weather_item)
         max_weather = max(temp_weather, key=temp_weather.count)
-        return TEXT_WEATHER.format(weather_compare_list[max_weather], max_weather)
+        if max_weather in weather_compare_list:
+            return TEXT_WEATHER.format(weather_compare_list[max_weather], max_weather)
+        else:
+            return TEXT_WEATHER.format(weather_compare_list['흐리고 비'], max_weather)
 
     @staticmethod
     def __rain_fall_message(rain_fall_dic):
