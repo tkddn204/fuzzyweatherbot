@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 from fuzzyweather.fuzzy import UseDB
 
 import matplotlib
@@ -43,7 +43,7 @@ class Graph(UseDB):
                 ax.plot(x2, y2, color='black')
         # plt.show()
 
-    def after_drow(self):
+    def after_draw(self):
         fig = plt.figure()
         after = self.db.get_after_membership()
         ax = fig.add_subplot(1, 1, 1)
@@ -77,13 +77,13 @@ class Graph(UseDB):
 
         now = date.today()
         if when is 0:
-            img_name = '{0}-result-'.format(now)
+            img_name = '{0}-today-'.format(now)
         else:
-            img_name = '{0}-result-'.format(now + timedelta(days=1))
+            img_name = '{0}-tomorrow-'.format(now)
         for num in membership_num:
             img_name += '{0:.2f}-'.format(num)
 
-        return img_name + '.png'
+        return img_name[:-1] + '.png'
 
     def autolabel(self, rects):
         for rect in rects:
@@ -138,7 +138,8 @@ class Graph(UseDB):
         # 바마다 색깔 지정
         colors = []
         for y_mem in y_membership:
-            color = cmap(y_mem/float(max(y_membership)))
+            select_color = y_mem / 100.
+            color = cmap(select_color)
             colors.append(color)
         rect = plt.bar(positions, y_membership, color=colors)
 
