@@ -148,7 +148,7 @@ class Messages:
                                  timeout=20)
 
             when = 0 if regex_text in TEXT_WEATHER_LIST[0] else 1
-            debug = 'debug' if '디버그' in text else ''
+            debug = 'debug' if '자세히' in text else ''
             when_and_crisp_text, fuzzy_text, img_name = \
                 self.fuzzy_weather_message(when, debug)
 

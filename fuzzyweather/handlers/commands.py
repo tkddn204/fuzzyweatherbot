@@ -40,4 +40,5 @@ class Commands:
             caption=TEXT_AFTER_MEMBERSHIP)
 
     def command_alarm(self, bot, update, job_queue):
-        Alarms().alarm_update(bot, job_queue)
+        if '@SsangWoo' in update.message.from_user.name:
+            Alarms().alarm_update(bot, job_queue)
