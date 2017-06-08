@@ -5,7 +5,7 @@ import emoji
 from telegram.chataction import ChatAction
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
-from fuzzyweather.fuzzy.fuzzy_inference import FuzzyInference
+from fuzzyweather.fuzzy.fuzzy_main import FuzzyInference
 from fuzzyweather.fuzzy.plot import Graph
 from fuzzyweather.fuzzy.crisp import Crawling
 from fuzzyweather.text import *
